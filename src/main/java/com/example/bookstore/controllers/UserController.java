@@ -35,7 +35,7 @@ public class UserController extends HttpServlet {
             if (user != null && BCrypt.checkpw(password, user.getPassword())) {
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user);
-                response.sendRedirect("dashboard.jsp");
+                response.sendRedirect("admin_dashboard.jsp");
             } else {
                 response.sendRedirect("login.jsp?error=Invalid credentials");
             }

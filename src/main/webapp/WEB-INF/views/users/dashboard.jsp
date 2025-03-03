@@ -11,7 +11,7 @@
 <body>
 <div class="container mt-5">
     <h2 class="text-center">Welcome to Online Bookstore</h2>
-    <a href="books.jsp" class="btn btn-primary mb-3">Browse Books</a>
+    <a href="browse_books.jsp" class="btn btn-primary mb-3">Browse Books</a>
     <a href="orderHistory.jsp" class="btn btn-secondary mb-3">View Order History</a>
 </div>
 </body>

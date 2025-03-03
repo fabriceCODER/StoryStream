@@ -11,7 +11,7 @@
 <body>
 <div class="container mt-5">
     <h2 class="text-center">Manage Books</h2>
-    <a href="addBook.jsp" class="btn btn-success mb-3">Add New Book</a>
+    <a href="add_book.jsp" class="btn btn-success mb-3">Add New Book</a>
     <table class="table table-bordered">
         <thead>
         <tr>

@@ -10,7 +10,7 @@
 <div class="container mt-5">
     <h2 class="text-center">Admin Dashboard</h2>
     <div class="list-group">
-        <a href="bookList.jsp" class="list-group-item list-group-item-action">Manage Books</a>
+        <a href="manage_books.jsp" class="list-group-item list-group-item-action">Manage Books</a>
         <a href="orderList.jsp" class="list-group-item list-group-item-action">View Orders</a>
     </div>
 </div>
