@@ -8,12 +8,12 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title><fmt:message key="register.title" /></title>
+    <title><fmt:message key="login.title" /></title>
 </head>
 <body>
 
 <!-- Language Selection -->
-<form method="get" action="register.jsp">
+<form method="get" action="login.jsp">
     <select name="lang" onchange="this.form.submit()">
         <option value="en" ${param.lang == 'en' ? 'selected' : ''}>English</option>
         <option value="es" ${param.lang == 'es' ? 'selected' : ''}>Español</option>
@@ -23,21 +23,22 @@
     </select>
 </form>
 
-<h2><fmt:message key="register.title" /></h2>
+<h2><fmt:message key="login.title" /></h2>
 <form action="userController" method="post">
-    <input type="hidden" name="action" value="register">
+    <input type="hidden" name="action" value="login">
 
-    <label><fmt:message key="register.username" /></label>
+    <label><fmt:message key="login.username" /></label>
     <input type="text" name="username" required>
 
-    <label><fmt:message key="register.password" /></label>
+    <label><fmt:message key="login.password" /></label>
     <input type="password" name="password" required>
 
-    <label><fmt:message key="register.confirmPassword" /></label>
-    <input type="password" name="confirmPassword" required>
-
-    <button type="submit"><fmt:message key="register.submit" /></button>
+    <button type="submit"><fmt:message key="login.submit" /></button>
 </form>
+
+<c:if test="${param.error != null}">
+    <p style="color: red;"><fmt:message key="login.error" /></p>
+</c:if>
 
 </body>
 </html>
