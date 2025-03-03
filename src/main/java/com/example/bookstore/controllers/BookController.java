@@ -1,6 +1,6 @@
-//package controller;
+//package com.example.bookstore.controllers;
 //
-//import model.Book;
+//import com.example.bookstore.models.Book;
 //import service.IBookService;
 //import serviceImpl.BookServiceImpl;
 //
