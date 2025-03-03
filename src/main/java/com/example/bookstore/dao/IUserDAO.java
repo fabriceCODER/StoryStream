@@ -6,4 +6,5 @@ public interface IUserDAO {
     User loginUser(String username, String password);
     boolean registerUser(User user);
     User getUserById(int id);
+    User getUserByUsername(String username);
 }

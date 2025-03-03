@@ -5,7 +5,6 @@ import com.example.bookstore.daoImpl.UserDAOImpl;
 import com.example.bookstore.models.User;
 import com.example.bookstore.services.IUserService;
 
-
 public class UserServiceImpl implements IUserService {
     private final IUserDAO userDAO = new UserDAOImpl();
 
@@ -22,5 +21,11 @@ public class UserServiceImpl implements IUserService {
     @Override
     public User getUserById(int id) {
         return userDAO.getUserById(id);
+    }
+
+    @Override
+    public User getUserByUsername(String username) {
+        // Implement the method using the DAO
+        return userDAO.getUserByUsername(username);  // Assuming DAO has this method
     }
 }

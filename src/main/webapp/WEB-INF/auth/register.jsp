@@ -24,7 +24,7 @@
 </form>
 
 <h2><fmt:message key="register.title" /></h2>
-<form action="userController" method="post">
+<form action="UserController" method="post">
     <input type="hidden" name="action" value="register">
 
     <label><fmt:message key="register.username" /></label>

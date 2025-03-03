@@ -62,4 +62,27 @@ public class UserDAOImpl implements IUserDAO {
         }
         return null;
     }
+
+    @Override
+    public User getUserByUsername(String username) {
+        User user = null;
+        String query = "SELECT * FROM users WHERE username = ?";
+
+        try (Connection connection = DbConnection.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, username);
+
+            ResultSet resultSet = stmt.executeQuery();
+            if (resultSet.next()) {
+                user = new User();
+                user.setId(resultSet.getInt("id"));
+                user.setUsername(resultSet.getString("username"));
+                user.setPassword(resultSet.getString("password"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return user;
+    }
 }

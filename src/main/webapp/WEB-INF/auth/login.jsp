@@ -24,7 +24,7 @@
 </form>
 
 <h2><fmt:message key="login.title" /></h2>
-<form action="userController" method="post">
+<form action="UserController" method="post">
     <input type="hidden" name="action" value="login">
 
     <label><fmt:message key="login.username" /></label>
