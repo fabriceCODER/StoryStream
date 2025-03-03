@@ -1,16 +1,13 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: PC
-  Date: 3/3/2025
-  Time: 2:28 PM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Title</title>
+    <meta charset="UTF-8">
+    <title>Online Bookstore</title>
 </head>
 <body>
-
+<footer class="text-center mt-5">
+    <p>&copy; 2025 Online Bookstore. All rights reserved.</p>
+</footer>
 </body>
 </html>
