@@ -33,7 +33,7 @@ public class BookDAOImpl implements IBookDAO {
     @Override
     public Book getBookById(int id) {
         String sql = "SELECT * FROM books WHERE id = ?";
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = DbConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, id);
@@ -52,7 +52,7 @@ public class BookDAOImpl implements IBookDAO {
     @Override
     public boolean addBook(Book book) {
         String sql = "INSERT INTO books (title, author, price) VALUES (?, ?, ?)";
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = DbConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, book.getTitle());
@@ -68,7 +68,7 @@ public class BookDAOImpl implements IBookDAO {
     @Override
     public boolean updateBook(Book book) {
         String sql = "UPDATE books SET title = ?, author = ?, price = ? WHERE id = ?";
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = DbConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, book.getTitle());
@@ -85,7 +85,7 @@ public class BookDAOImpl implements IBookDAO {
     @Override
     public boolean deleteBook(int id) {
         String sql = "DELETE FROM books WHERE id = ?";
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = DbConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, id);
