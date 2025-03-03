@@ -1,2 +1,4 @@
-package com.example.bookstore.utils;public class DbConnection {
+package com.example.bookstore.utils;
+
+public class DbConnection {
 }
