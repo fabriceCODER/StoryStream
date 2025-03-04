@@ -5,14 +5,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Online Bookstore</title>
-    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/index.css">
 </head>
 <body>
 <header>
     <h1>Welcome to Online Bookstore</h1>
     <nav>
         <ul>
-            <li><a href="login.jsp">Login</a></li>
+            <li><a href="login">Login</a></li>
             <li><a href="register.jsp">Register</a></li>
             <li><a href="browse-books.jsp">Browse Books</a></li>
             <li><a href="cart.jsp">Cart</a></li>

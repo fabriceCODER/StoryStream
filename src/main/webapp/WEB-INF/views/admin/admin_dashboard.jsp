@@ -1,4 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page session="true" %>
+<%
+    String role = (String) session.getAttribute("role");
+    if (role == null || !role.equals("admin")) {
+        response.sendRedirect("login.jsp"); // Redirect unauthorized users to login
+        return;
+    }
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +19,8 @@
     <h2 class="text-center">Admin Dashboard</h2>
     <div class="list-group">
         <a href="manage_books.jsp" class="list-group-item list-group-item-action">Manage Books</a>
-        <a href="orderList.jsp" class="list-group-item list-group-item-action">View Orders</a>
+        <a href="add_book.jsp" class="list-group-item list-group-item-action">Add Books</a>
+        <a href="logout.jsp" class="list-group-item list-group-item-action text-danger">Logout</a>
     </div>
 </div>
 </body>
