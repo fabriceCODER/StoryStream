@@ -9,7 +9,7 @@ import java.io.IOException;
 
 @WebFilter(urlPatterns = {"/views/admin/*", "/admin/*"})
 public class AdminAuthFilter implements Filter {
-    
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         // Initialization code if needed
@@ -36,4 +36,4 @@ public class AdminAuthFilter implements Filter {
     public void destroy() {
         // Cleanup code if needed
     }
-} 
+}
