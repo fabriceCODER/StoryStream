@@ -17,9 +17,7 @@ public class AuthenticationFilter implements Filter {
             "/auth/register.jsp",
             "/auth/login",
             "/auth/register",
-            "/assets/",
             "/home.jsp",
-            "/error.jsp",
             "/index.jsp"
     );
 
@@ -74,12 +72,9 @@ public class AuthenticationFilter implements Filter {
         boolean isPublic = PUBLIC_PATHS.stream().anyMatch(path::startsWith) ||
                           PUBLIC_PATHS.stream().anyMatch(publicPath -> path.endsWith(publicPath));
 
-        // Check if it's a static resource
-        boolean isStaticResource = path.matches(".*\\.(css|js|png|jpg|jpeg|gif|ico|woff|woff2|ttf|eot)$");
+        System.out.println("Checking path: " + path + " isPublic: " + isPublic);
 
-        System.out.println("Checking path: " + path + " isPublic: " + isPublic + " isStaticResource: " + isStaticResource);
-
-        return isPublic || isStaticResource;
+        return isPublic;
     }
 
     @Override
