@@ -12,9 +12,18 @@ public class DbConnection {
     private static final String DEFAULT_DB_URL = "jdbc:postgresql://localhost:5432/online_bookstore";
     private static final String DEFAULT_DB_USER = "postgres";
     private static final String DEFAULT_DB_PASSWORD = "root";
+    private static final String DRIVER_CLASS = "org.postgresql.Driver";
 
     static {
         try {
+            // First, explicitly load the PostgreSQL driver
+            try {
+                Class.forName(DRIVER_CLASS);
+                System.out.println("PostgreSQL JDBC Driver loaded successfully");
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException("Failed to load PostgreSQL JDBC driver. Make sure the driver is in the classpath.", e);
+            }
+
             String dbUrl;
             String dbUser;
             String dbPassword;
@@ -44,6 +53,7 @@ public class DbConnection {
             System.out.println("Attempting to connect to database with URL: " + dbUrl);
             
             HikariConfig config = new HikariConfig();
+            config.setDriverClassName(DRIVER_CLASS);
             config.setJdbcUrl(dbUrl);
             config.setUsername(dbUser);
             config.setPassword(dbPassword);
@@ -53,11 +63,13 @@ public class DbConnection {
             config.setMinimumIdle(5);
             config.setIdleTimeout(300000);
             config.setConnectionTimeout(20000);
+            config.setAutoCommit(true);
             
             // PostgreSQL specific settings
             config.addDataSourceProperty("cachePrepStmts", "true");
             config.addDataSourceProperty("prepStmtCacheSize", "250");
             config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+            config.addDataSourceProperty("useServerPrepStmts", "true");
             
             dataSource = new HikariDataSource(config);
             

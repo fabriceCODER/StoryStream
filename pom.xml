@@ -15,6 +15,8 @@
         <maven.compiler.target>17</maven.compiler.target> <!-- Java 17 -->
         <maven.compiler.source>17</maven.compiler.source> <!-- Java 17 -->
         <junit.version>5.10.1</junit.version> <!-- Latest JUnit 5 -->
+        <postgresql.version>42.7.2</postgresql.version>
+        <hikaricp.version>5.1.0</hikaricp.version>
     </properties>
 
     <dependencies>
@@ -58,12 +60,13 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.7.2</version>
+            <version>${postgresql.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>5.1.0</version>
+            <version>${hikaricp.version}</version>
         </dependency>
 
         <!-- Environment Configuration -->
@@ -78,6 +81,19 @@
             <groupId>org.mindrot</groupId>
             <artifactId>jbcrypt</artifactId>
             <version>0.4</version> <!-- Confirmed stable version -->
+        </dependency>
+
+        <!-- SLF4J API -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.11</version>
+        </dependency>
+        <!-- SLF4J Simple binding for logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.0.11</version>
         </dependency>
     </dependencies>
 
