@@ -13,7 +13,9 @@ import java.io.IOException;
 import org.mindrot.jbcrypt.BCrypt;
 
 @WebServlet(urlPatterns = {
-    "/auth/*"
+    "/auth/login",
+    "/auth/register",
+    "/auth/logout"
 })
 public class UserController extends HttpServlet {
     private final IUserService userService = new UserServiceImpl();
@@ -25,16 +27,15 @@ public class UserController extends HttpServlet {
         String lang = request.getParameter("lang");
         
         try {
-            if (servletPath.equals("/auth")) {
-                if (pathInfo != null) {
-                    if (pathInfo.equals("/login")) {
-                        handleLogin(request, response);
-                    } else if (pathInfo.equals("/register")) {
-                        handleRegistration(request, response);
-                    } else {
-                        response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                    }
-                }
+            switch (servletPath) {
+                case "/auth/login":
+                    handleLogin(request, response);
+                    break;
+                case "/auth/register":
+                    handleRegistration(request, response);
+                    break;
+                default:
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
         } catch (Exception e) {
             System.err.println("Error in UserController.doPost: " + e.getMessage());
@@ -143,11 +144,10 @@ public class UserController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String servletPath = request.getServletPath();
-        String pathInfo = request.getPathInfo();
         String lang = request.getParameter("lang");
         
         try {
-            if ("/auth/logout".equals(servletPath + (pathInfo != null ? pathInfo : ""))) {
+            if ("/auth/logout".equals(servletPath)) {
                 HttpSession session = request.getSession(false);
                 if (session != null) {
                     lang = (String) session.getAttribute("lang"); // Preserve language before invalidating session

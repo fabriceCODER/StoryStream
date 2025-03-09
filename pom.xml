@@ -12,9 +12,9 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.target>17</maven.compiler.target> <!-- Java 17 -->
-        <maven.compiler.source>17</maven.compiler.source> <!-- Java 17 -->
-        <junit.version>5.10.1</junit.version> <!-- Latest JUnit 5 -->
+        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <junit.version>5.10.1</junit.version>
         <postgresql.version>42.7.2</postgresql.version>
         <hikaricp.version>5.1.0</hikaricp.version>
     </properties>
@@ -80,7 +80,7 @@
         <dependency>
             <groupId>org.mindrot</groupId>
             <artifactId>jbcrypt</artifactId>
-            <version>0.4</version> <!-- Confirmed stable version -->
+            <version>0.4</version>
         </dependency>
 
         <!-- SLF4J API -->
@@ -98,6 +98,7 @@
     </dependencies>
 
     <build>
+        <finalName>BookStore</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -113,6 +114,8 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.3.2</version>
                 <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <warName>BookStore</warName>
                     <webResources>
                         <resource>
                             <directory>src/main/resources</directory>
@@ -132,6 +135,11 @@
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.2.0</version>
             </plugin>
         </plugins>
     </build>

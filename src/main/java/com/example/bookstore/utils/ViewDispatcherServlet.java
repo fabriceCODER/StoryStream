@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet(urlPatterns = {
+    "/",
     "/login",
     "/register",
     "/dashboard",
@@ -27,6 +28,10 @@ public class ViewDispatcherServlet extends HttpServlet {
 
         // Map URLs to JSP pages
         switch (path) {
+            case "/":
+                // Redirect root to login
+                response.sendRedirect(request.getContextPath() + "/login");
+                return;
             case "/login":
                 jspPage = "/auth/login.jsp";
                 break;

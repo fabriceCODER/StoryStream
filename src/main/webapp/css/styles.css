@@ -1,0 +1,219 @@
+/* Common styles */
+:root {
+     --primary-color: #007bff;
+     --secondary-color: #6c757d;
+     --success-color: #28a745;
+     --danger-color: #dc3545;
+     --warning-color: #ffc107;
+     --info-color: #17a2b8;
+     --light-color: #f8f9fa;
+     --dark-color: #343a40;
+}
+
+body {
+     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+     line-height: 1.6;
+     background-color: #f4f4f4;
+     margin: 0;
+     padding: 0;
+}
+
+/* Container styles */
+.container {
+     padding: 2rem;
+}
+
+/* Card styles */
+.card {
+     background: white;
+     border-radius: 8px;
+     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+     margin-bottom: 2rem;
+}
+
+.card-body {
+     padding: 2rem;
+}
+
+/* Form styles */
+.form-group {
+     margin-bottom: 1.5rem;
+}
+
+.form-label {
+     font-weight: 500;
+     margin-bottom: 0.5rem;
+     color: var(--dark-color);
+}
+
+.form-control {
+     border: 1px solid #ddd;
+     border-radius: 4px;
+     padding: 0.75rem;
+     width: 100%;
+     transition: border-color 0.2s;
+}
+
+.form-control:focus {
+     border-color: var(--primary-color);
+     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+     outline: none;
+}
+
+.form-select {
+     border: 1px solid #ddd;
+     border-radius: 4px;
+     padding: 0.75rem;
+     width: 100%;
+     background-color: white;
+}
+
+/* Button styles */
+.btn {
+     padding: 0.75rem 1.5rem;
+     border-radius: 4px;
+     font-weight: 500;
+     cursor: pointer;
+     transition: all 0.2s;
+     border: none;
+}
+
+.btn-primary {
+     background-color: var(--primary-color);
+     color: white;
+}
+
+.btn-primary:hover {
+     background-color: #0056b3;
+}
+
+.btn-link {
+     color: var(--primary-color);
+     text-decoration: none;
+     padding: 0.75rem 1.5rem;
+}
+
+.btn-link:hover {
+     text-decoration: underline;
+}
+
+/* Alert styles */
+.alert {
+     padding: 1rem;
+     border-radius: 4px;
+     margin: 1rem 0;
+}
+
+.alert-danger {
+     background-color: #f8d7da;
+     border-color: #f5c6cb;
+     color: #721c24;
+}
+
+.alert-success {
+     background-color: #d4edda;
+     border-color: #c3e6cb;
+     color: #155724;
+}
+
+/* Table styles */
+.table {
+     width: 100%;
+     border-collapse: collapse;
+     margin-bottom: 1rem;
+}
+
+.table th,
+.table td {
+     padding: 1rem;
+     border-bottom: 1px solid #dee2e6;
+}
+
+.table th {
+     background-color: var(--light-color);
+     font-weight: 600;
+}
+
+/* Navigation styles */
+.navbar {
+     background-color: white;
+     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+     padding: 1rem 2rem;
+}
+
+.navbar-brand {
+     font-size: 1.5rem;
+     font-weight: 600;
+     color: var(--dark-color);
+     text-decoration: none;
+}
+
+.nav-link {
+     color: var(--dark-color);
+     text-decoration: none;
+     padding: 0.5rem 1rem;
+     transition: color 0.2s;
+}
+
+.nav-link:hover {
+     color: var(--primary-color);
+}
+
+/* Utility classes */
+.text-center {
+     text-align: center;
+}
+
+.mb-4 {
+     margin-bottom: 1.5rem;
+}
+
+.d-flex {
+     display: flex;
+}
+
+.justify-content-between {
+     justify-content: space-between;
+}
+
+.align-items-center {
+     align-items: center;
+}
+
+/* Language selector styles */
+.language-selector {
+     margin-bottom: 2rem;
+     padding: 1rem;
+     background-color: white;
+     border-radius: 4px;
+     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Icon styles */
+.fas {
+     margin-right: 0.5rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+     .container {
+          padding: 1rem;
+     }
+
+     .card-body {
+          padding: 1.5rem;
+     }
+
+     .btn {
+          width: 100%;
+          margin-bottom: 0.5rem;
+     }
+
+     .d-flex {
+          flex-direction: column;
+     }
+
+     .justify-content-between {
+          align-items: stretch;
+     }
+}

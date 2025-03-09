@@ -36,7 +36,8 @@
                                 </form>
 
                                 <!-- Login Form -->
-                                <form action="${pageContext.request.contextPath}/auth/login" method="post">
+                                <form action="${pageContext.request.contextPath}/auth/login" method="post"
+                                    class="needs-validation" novalidate>
                                     <input type="hidden" name="lang" value="${param.lang != null ? param.lang : 'en'}">
                                     <div class="form-group mb-3">
                                         <label for="username" class="form-label">
@@ -44,6 +45,9 @@
                                             <fmt:message key="login.username" />
                                         </label>
                                         <input type="text" name="username" id="username" class="form-control" required>
+                                        <div class="invalid-feedback">
+                                            <fmt:message key="login.username.required" />
+                                        </div>
                                     </div>
 
                                     <div class="form-group mb-3">
@@ -53,6 +57,9 @@
                                         </label>
                                         <input type="password" name="password" id="password" class="form-control"
                                             required>
+                                        <div class="invalid-feedback">
+                                            <fmt:message key="login.password.required" />
+                                        </div>
                                     </div>
 
                                     <div class="d-flex justify-content-between align-items-center">
@@ -60,7 +67,7 @@
                                             <i class="fas fa-sign-in-alt"></i>
                                             <fmt:message key="login.submit" />
                                         </button>
-                                        <a href="${pageContext.request.contextPath}/register${param.lang != null ? '?lang='.concat(param.lang) : ''}"
+                                        <a href="/register${not empty param.lang ? '?lang='.concat(param.lang) : ''}"
                                             class="btn btn-link">
                                             <i class="fas fa-user-plus"></i>
                                             <fmt:message key="login.register" />
@@ -79,6 +86,23 @@
                                         <i class="fas fa-check-circle"></i> ${param.message}
                                     </div>
                                 </c:if>
+
+                                <script>
+                                    // Form validation
+                                    (function () {
+                                        'use strict'
+                                        var forms = document.querySelectorAll('.needs-validation')
+                                        Array.prototype.slice.call(forms).forEach(function (form) {
+                                            form.addEventListener('submit', function (event) {
+                                                if (!form.checkValidity()) {
+                                                    event.preventDefault()
+                                                    event.stopPropagation()
+                                                }
+                                                form.classList.add('was-validated')
+                                            }, false)
+                                        })
+                                    })()
+                                </script>
                             </div>
                         </div>
                     </div>

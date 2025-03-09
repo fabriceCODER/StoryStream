@@ -36,7 +36,8 @@
                                 </form>
 
                                 <!-- Registration Form -->
-                                <form action="${pageContext.request.contextPath}/auth/register" method="post">
+                                <form action="${pageContext.request.contextPath}/auth/register" method="post"
+                                    class="needs-validation" novalidate>
                                     <input type="hidden" name="lang" value="${param.lang != null ? param.lang : 'en'}">
                                     <div class="form-group mb-3">
                                         <label for="username" class="form-label">
@@ -44,6 +45,9 @@
                                             <fmt:message key="register.username" />
                                         </label>
                                         <input type="text" name="username" id="username" class="form-control" required>
+                                        <div class="invalid-feedback">
+                                            <fmt:message key="register.username.required" />
+                                        </div>
                                     </div>
 
                                     <div class="form-group mb-3">
@@ -52,7 +56,15 @@
                                             <fmt:message key="register.password" />
                                         </label>
                                         <input type="password" name="password" id="password" class="form-control"
-                                            required>
+                                            required minlength="6" pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$">
+                                        <div class="invalid-feedback">
+                                            <fmt:message key="register.password.requirements" />
+                                        </div>
+                                        <small class="form-text text-muted">
+                                            <i class="fas fa-info-circle"></i>
+                                            Password must be at least 6 characters long and contain both letters and
+                                            numbers.
+                                        </small>
                                     </div>
 
                                     <div class="form-group mb-3">
@@ -62,6 +74,9 @@
                                         </label>
                                         <input type="password" name="confirmPassword" id="confirmPassword"
                                             class="form-control" required>
+                                        <div class="invalid-feedback">
+                                            <fmt:message key="register.confirmPassword.required" />
+                                        </div>
                                     </div>
 
                                     <div class="d-flex justify-content-between align-items-center">
@@ -69,7 +84,7 @@
                                             <i class="fas fa-user-plus"></i>
                                             <fmt:message key="register.submit" />
                                         </button>
-                                        <a href="${pageContext.request.contextPath}/login${param.lang != null ? '?lang='.concat(param.lang) : ''}"
+                                        <a href="${pageContext.request.contextPath}/login${not empty param.lang ? '?lang='.concat(param.lang) : ''}"
                                             class="btn btn-link">
                                             <i class="fas fa-sign-in-alt"></i>
                                             <fmt:message key="register.login" />
@@ -88,6 +103,35 @@
                                         <i class="fas fa-check-circle"></i> ${param.message}
                                     </div>
                                 </c:if>
+
+                                <script>
+                                    // Form validation
+                                    (function () {
+                                        'use strict'
+                                        var forms = document.querySelectorAll('.needs-validation')
+                                        Array.prototype.slice.call(forms).forEach(function (form) {
+                                            form.addEventListener('submit', function (event) {
+                                                if (!form.checkValidity()) {
+                                                    event.preventDefault()
+                                                    event.stopPropagation()
+                                                }
+
+                                                // Check if passwords match
+                                                var password = form.querySelector('#password')
+                                                var confirmPassword = form.querySelector('#confirmPassword')
+                                                if (password.value !== confirmPassword.value) {
+                                                    confirmPassword.setCustomValidity('Passwords do not match')
+                                                    event.preventDefault()
+                                                    event.stopPropagation()
+                                                } else {
+                                                    confirmPassword.setCustomValidity('')
+                                                }
+
+                                                form.classList.add('was-validated')
+                                            }, false)
+                                        })
+                                    })()
+                                </script>
                             </div>
                         </div>
                     </div>
