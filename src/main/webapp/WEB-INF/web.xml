@@ -27,11 +27,30 @@
         <session-timeout>30</session-timeout>
         <cookie-config>
             <http-only>true</http-only>
-            <secure>true</secure>
+            <secure>false</secure>
         </cookie-config>
     </session-config>
 
-    <!-- Security constraints -->
+    <!-- Security roles -->
+    <security-role>
+        <role-name>admin</role-name>
+    </security-role>
+    <security-role>
+        <role-name>user</role-name>
+    </security-role>
+
+    <!-- Public resources -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Public Resources</web-resource-name>
+            <url-pattern>/auth/*</url-pattern>
+            <url-pattern>/assets/*</url-pattern>
+            <url-pattern>/home.jsp</url-pattern>
+            <url-pattern>/error.jsp</url-pattern>
+        </web-resource-collection>
+    </security-constraint>
+
+    <!-- Protected Admin Area -->
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Protected Admin Area</web-resource-name>
@@ -39,6 +58,19 @@
             <url-pattern>/views/admin/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <!-- Protected User Area -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Protected User Area</web-resource-name>
+            <url-pattern>/views/users/*</url-pattern>
+            <url-pattern>/user/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>user</role-name>
             <role-name>admin</role-name>
         </auth-constraint>
     </security-constraint>

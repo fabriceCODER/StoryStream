@@ -22,13 +22,13 @@ public class AdminAuthFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         HttpSession session = httpRequest.getSession(false);
 
-        boolean isLoggedIn = session != null && session.getAttribute("user") != null;
-        boolean isAdmin = isLoggedIn && "admin".equals(session.getAttribute("userRole"));
+        // At this point, user is already authenticated due to AuthenticationFilter
+        String userRole = (String) session.getAttribute("userRole");
 
-        if (isAdmin) {
+        if ("admin".equals(userRole)) {
             chain.doFilter(request, response);
         } else {
-            httpResponse.sendRedirect(httpRequest.getContextPath() + "/auth/login.jsp?error=Access denied. Admin rights required.");
+            httpResponse.sendRedirect(httpRequest.getContextPath() + "/home.jsp?error=Access denied. Admin rights required.");
         }
     }
 
