@@ -34,7 +34,7 @@ public class UserController extends HttpServlet {
         } catch (Exception e) {
             System.err.println("Error in UserController.doPost: " + e.getMessage());
             e.printStackTrace();
-            response.sendRedirect(request.getContextPath() + "/auth/login.jsp?error=An unexpected error occurred");
+            response.sendRedirect(request.getContextPath() + "/login?error=An unexpected error occurred");
         }
     }
 
@@ -57,7 +57,7 @@ public class UserController extends HttpServlet {
         try {
             // Validate input
             if (username == null || username.trim().isEmpty() || password == null || password.trim().isEmpty()) {
-                response.sendRedirect(request.getContextPath() + "/auth/login.jsp?error=Please fill in all fields");
+                response.sendRedirect(request.getContextPath() + "/login?error=Please fill in all fields");
                 return;
             }
 
@@ -76,18 +76,18 @@ public class UserController extends HttpServlet {
 
                 // Redirect based on role
                 if ("admin".equalsIgnoreCase(user.getRole())) {
-                    response.sendRedirect(request.getContextPath() + "/views/admin/admin_dashboard.jsp");
+                    response.sendRedirect(request.getContextPath() + "/admin/dashboard");
                 } else {
-                    response.sendRedirect(request.getContextPath() + "/views/users/dashboard.jsp");
+                    response.sendRedirect(request.getContextPath() + "/dashboard");
                 }
             } else {
                 System.out.println("Login failed for user: " + username);
-                response.sendRedirect(request.getContextPath() + "/auth/login.jsp?error=Invalid username or password");
+                response.sendRedirect(request.getContextPath() + "/login?error=Invalid username or password");
             }
         } catch (Exception e) {
             System.err.println("Error in handleLogin: " + e.getMessage());
             e.printStackTrace();
-            response.sendRedirect(request.getContextPath() + "/auth/login.jsp?error=An error occurred during login");
+            response.sendRedirect(request.getContextPath() + "/login?error=An error occurred during login");
         }
     }
 
@@ -101,25 +101,25 @@ public class UserController extends HttpServlet {
             if (username == null || username.trim().isEmpty() || 
                 password == null || password.trim().isEmpty() || 
                 confirmPassword == null || confirmPassword.trim().isEmpty()) {
-                response.sendRedirect(request.getContextPath() + "/auth/register.jsp?error=Please fill in all fields");
+                response.sendRedirect(request.getContextPath() + "/register?error=Please fill in all fields");
                 return;
             }
 
             // Check password length
             if (password.length() < 6) {
-                response.sendRedirect(request.getContextPath() + "/auth/register.jsp?error=Password must be at least 6 characters long");
+                response.sendRedirect(request.getContextPath() + "/register?error=Password must be at least 6 characters long");
                 return;
             }
 
             // Check password match
             if (!password.equals(confirmPassword)) {
-                response.sendRedirect(request.getContextPath() + "/auth/register.jsp?error=Passwords do not match");
+                response.sendRedirect(request.getContextPath() + "/register?error=Passwords do not match");
                 return;
             }
 
             // Check if username exists
             if (userService.getUserByUsername(username) != null) {
-                response.sendRedirect(request.getContextPath() + "/auth/register.jsp?error=Username already exists");
+                response.sendRedirect(request.getContextPath() + "/register?error=Username already exists");
                 return;
             }
 
@@ -131,15 +131,15 @@ public class UserController extends HttpServlet {
             // Register user
             if (userService.registerUser(user)) {
                 System.out.println("User registered successfully: " + username);
-                response.sendRedirect(request.getContextPath() + "/auth/login.jsp?message=Registration successful. Please login.");
+                response.sendRedirect(request.getContextPath() + "/login?message=Registration successful. Please login.");
             } else {
                 System.err.println("Failed to register user: " + username);
-                response.sendRedirect(request.getContextPath() + "/auth/register.jsp?error=Registration failed");
+                response.sendRedirect(request.getContextPath() + "/register?error=Registration failed");
             }
         } catch (Exception e) {
             System.err.println("Error in handleRegistration: " + e.getMessage());
             e.printStackTrace();
-            response.sendRedirect(request.getContextPath() + "/auth/register.jsp?error=An error occurred during registration");
+            response.sendRedirect(request.getContextPath() + "/register?error=An error occurred during registration");
         }
     }
 
@@ -153,14 +153,14 @@ public class UserController extends HttpServlet {
                 if (session != null) {
                     session.invalidate();
                 }
-                response.sendRedirect(request.getContextPath() + "/auth/login.jsp?message=Logged out successfully");
+                response.sendRedirect(request.getContextPath() + "/login?message=Logged out successfully");
             } else if (servletPath.startsWith("/user")) {
                 handleUserGetRequest(request, response);
             }
         } catch (Exception e) {
             System.err.println("Error in UserController.doGet: " + e.getMessage());
             e.printStackTrace();
-            response.sendRedirect(request.getContextPath() + "/auth/login.jsp?error=An unexpected error occurred");
+            response.sendRedirect(request.getContextPath() + "/login?error=An unexpected error occurred");
         }
     }
 
