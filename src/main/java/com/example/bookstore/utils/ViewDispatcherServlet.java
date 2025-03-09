@@ -23,6 +23,7 @@ public class ViewDispatcherServlet extends HttpServlet {
             throws ServletException, IOException {
         String path = request.getServletPath();
         String jspPage;
+        String lang = request.getParameter("lang");
 
         // Map URLs to JSP pages
         switch (path) {
@@ -44,6 +45,11 @@ public class ViewDispatcherServlet extends HttpServlet {
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 return;
+        }
+
+        // Preserve language parameter if present
+        if (lang != null && !lang.trim().isEmpty()) {
+            request.setAttribute("lang", lang);
         }
 
         // Forward the request to the appropriate JSP
