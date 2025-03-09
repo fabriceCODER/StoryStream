@@ -9,7 +9,7 @@
 <div class="container mt-5">
     <h2 class="text-center text-danger">Access Denied!</h2>
     <p class="text-center">You do not have permission to view this page.</p>
-    <a href="../../home.jsp" class="btn btn-primary w-100">Go to Home</a>
+    <a href="home.jsp" class="btn btn-primary w-100">Go to Home</a>
 </div>
 </body>
 </html>
