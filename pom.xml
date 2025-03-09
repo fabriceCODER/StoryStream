@@ -54,6 +54,18 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- Database Dependencies -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>5.1.0</version>
+        </dependency>
+
         <!-- Other dependencies -->
         <dependency>
             <groupId>io.github.cdimascio</groupId>
