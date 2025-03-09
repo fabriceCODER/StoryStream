@@ -12,7 +12,6 @@ public class AdminAuthFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        // Initialization code if needed
     }
 
     @Override
@@ -22,18 +21,24 @@ public class AdminAuthFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         HttpSession session = httpRequest.getSession(false);
 
-        // At this point, user is already authenticated due to AuthenticationFilter
-        String userRole = (String) session.getAttribute("userRole");
+        // At this point, user should be authenticated due to AuthenticationFilter
+        if (session == null) {
+            httpResponse.sendRedirect(httpRequest.getContextPath() + "/auth/login.jsp");
+            return;
+        }
 
+        String userRole = (String) session.getAttribute("userRole");
+        
         if ("admin".equals(userRole)) {
+            System.out.println("Admin access granted to: " + httpRequest.getRequestURI());
             chain.doFilter(request, response);
         } else {
+            System.out.println("Admin access denied to: " + httpRequest.getRequestURI());
             httpResponse.sendRedirect(httpRequest.getContextPath() + "/home.jsp?error=Access denied. Admin rights required.");
         }
     }
 
     @Override
     public void destroy() {
-        // Cleanup code if needed
     }
 }

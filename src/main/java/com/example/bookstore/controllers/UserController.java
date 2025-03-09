@@ -13,38 +13,34 @@ import java.io.IOException;
 import org.mindrot.jbcrypt.BCrypt;
 
 @WebServlet(urlPatterns = {
-        "/auth/login",
-        "/auth/register",
-        "/auth/logout",
-        "/user/*"
+    "/auth/login",
+    "/auth/register",
+    "/auth/logout",
+    "/user/*"
 })
 public class UserController extends HttpServlet {
     private final IUserService userService = new UserServiceImpl();
-    private static final String AUTH_PATH = "/auth";
-    private static final String VIEWS_PATH = "/views";
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String pathInfo = request.getPathInfo();
         String servletPath = request.getServletPath();
-
-        if (servletPath.startsWith(AUTH_PATH)) {
-            handleAuthRequest(request, response, servletPath.substring(AUTH_PATH.length()));
-        } else {
-            handleUserRequest(request, response, pathInfo);
+        
+        if (servletPath.startsWith("/auth")) {
+            handleAuthRequest(request, response);
+        } else if (servletPath.startsWith("/user")) {
+            handleUserRequest(request, response);
         }
     }
 
-    private void handleAuthRequest(HttpServletRequest request, HttpServletResponse response, String path) throws ServletException, IOException {
-        switch (path) {
-            case "/login":
-                handleLogin(request, response);
-                break;
-            case "/register":
-                handleRegistration(request, response);
-                break;
-            default:
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+    private void handleAuthRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String path = request.getServletPath();
+        
+        if (path.endsWith("/login")) {
+            handleLogin(request, response);
+        } else if (path.endsWith("/register")) {
+            handleRegistration(request, response);
+        } else {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
 
@@ -64,10 +60,17 @@ public class UserController extends HttpServlet {
             session.setAttribute("user", user);
             session.setAttribute("userRole", user.getRole());
 
-            if ("admin".equals(user.getRole())) {
-                response.sendRedirect(request.getContextPath() + "/views/admin/dashboard.jsp");
+            // Check for redirect URL in session
+            String redirectUrl = (String) session.getAttribute("redirectUrl");
+            if (redirectUrl != null) {
+                session.removeAttribute("redirectUrl");
+                response.sendRedirect(request.getContextPath() + redirectUrl);
             } else {
-                response.sendRedirect(request.getContextPath() + "/home.jsp");
+                if ("admin".equals(user.getRole())) {
+                    response.sendRedirect(request.getContextPath() + "/views/admin/admin_dashboard.jsp");
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/views/users/dashboard.jsp");
+                }
             }
         } else {
             response.sendRedirect(request.getContextPath() + "/auth/login.jsp?error=Invalid credentials");
@@ -96,7 +99,7 @@ public class UserController extends HttpServlet {
 
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         User user = new User(username, hashedPassword);
-        user.setRole("user"); // Set default role
+        user.setRole("user");
         userService.registerUser(user);
         response.sendRedirect(request.getContextPath() + "/auth/login.jsp?message=Registration successful");
     }
@@ -104,25 +107,33 @@ public class UserController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String servletPath = request.getServletPath();
-
+        
         if ("/auth/logout".equals(servletPath)) {
             HttpSession session = request.getSession(false);
             if (session != null) {
                 session.invalidate();
             }
             response.sendRedirect(request.getContextPath() + "/auth/login.jsp?message=Logged out successfully");
-        } else {
-            String pathInfo = request.getPathInfo();
-            if (pathInfo == null || pathInfo.equals("/")) {
-                request.getRequestDispatcher("/views/users/profile.jsp").forward(request, response);
-            } else {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            }
+        } else if (servletPath.startsWith("/user")) {
+            handleUserGetRequest(request, response);
         }
     }
 
-    private void handleUserRequest(HttpServletRequest request, HttpServletResponse response, String pathInfo) throws ServletException, IOException {
-        // Handle other user-related operations here
-        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+    private void handleUserGetRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String pathInfo = request.getPathInfo();
+        if (pathInfo == null || pathInfo.equals("/")) {
+            request.getRequestDispatcher("/views/users/profile.jsp").forward(request, response);
+        } else {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
+    }
+
+    private void handleUserRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String pathInfo = request.getPathInfo();
+        if (pathInfo == null || pathInfo.equals("/")) {
+            request.getRequestDispatcher("/views/users/profile.jsp").forward(request, response);
+        } else {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
     }
 }
