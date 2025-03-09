@@ -37,6 +37,7 @@
 
                                 <!-- Registration Form -->
                                 <form action="${pageContext.request.contextPath}/auth/register" method="post">
+                                    <input type="hidden" name="lang" value="${param.lang != null ? param.lang : 'en'}">
                                     <div class="form-group mb-3">
                                         <label for="username" class="form-label">
                                             <i class="fas fa-user"></i>
@@ -68,7 +69,8 @@
                                             <i class="fas fa-user-plus"></i>
                                             <fmt:message key="register.submit" />
                                         </button>
-                                        <a href="${pageContext.request.contextPath}/login" class="btn btn-link">
+                                        <a href="${pageContext.request.contextPath}/login${param.lang != null ? '?lang='.concat(param.lang) : ''}"
+                                            class="btn btn-link">
                                             <i class="fas fa-sign-in-alt"></i>
                                             <fmt:message key="register.login" />
                                         </a>
