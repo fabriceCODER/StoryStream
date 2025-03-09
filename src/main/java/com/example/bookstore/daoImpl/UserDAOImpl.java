@@ -1,27 +1,28 @@
 package com.example.bookstore.daoImpl;
 
 import com.example.bookstore.dao.IUserDAO;
-
 import com.example.bookstore.models.User;
 import com.example.bookstore.utils.DbConnection;
-
 import java.sql.*;
 
 public class UserDAOImpl implements IUserDAO {
 
     @Override
     public User loginUser(String username, String password) {
-        String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+        String sql = "SELECT * FROM users WHERE username = ?";
         try (Connection conn = DbConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, username);
-            pstmt.setString(2, password);
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                return new User(rs.getInt("id"), rs.getString("username"),
-                        rs.getString("password"), rs.getString("role"));
+                return new User(
+                    rs.getInt("id"),
+                    rs.getString("username"),
+                    rs.getString("password"),
+                    rs.getString("role")
+                );
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -31,17 +32,24 @@ public class UserDAOImpl implements IUserDAO {
 
     @Override
     public boolean registerUser(User user) {
-        String sql = "INSERT INTO users (username, password, role) VALUES (?, ?, 'USER')";
+        String sql = "INSERT INTO users (username, password, role) VALUES (?, ?, 'user')";
         try (Connection conn = DbConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, user.getUsername());
             pstmt.setString(2, user.getPassword());
-            return pstmt.executeUpdate() > 0;
+            
+            int result = pstmt.executeUpdate();
+            if (result > 0) {
+                System.out.println("User registered successfully: " + user.getUsername());
+                return true;
+            }
+            return false;
         } catch (SQLException e) {
+            System.err.println("Error registering user: " + e.getMessage());
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     @Override
@@ -54,8 +62,12 @@ public class UserDAOImpl implements IUserDAO {
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                return new User(rs.getInt("id"), rs.getString("username"),
-                        rs.getString("password"), rs.getString("role"));
+                return new User(
+                    rs.getInt("id"),
+                    rs.getString("username"),
+                    rs.getString("password"),
+                    rs.getString("role")
+                );
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -65,24 +77,25 @@ public class UserDAOImpl implements IUserDAO {
 
     @Override
     public User getUserByUsername(String username) {
-        User user = null;
-        String query = "SELECT * FROM users WHERE username = ?";
+        String sql = "SELECT * FROM users WHERE username = ?";
+        try (Connection conn = DbConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
 
-        try (Connection connection = DbConnection.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, username);
-
-            ResultSet resultSet = stmt.executeQuery();
-            if (resultSet.next()) {
-                user = new User();
-                user.setId(resultSet.getInt("id"));
-                user.setUsername(resultSet.getString("username"));
-                user.setPassword(resultSet.getString("password"));
+            if (rs.next()) {
+                return new User(
+                    rs.getInt("id"),
+                    rs.getString("username"),
+                    rs.getString("password"),
+                    rs.getString("role")
+                );
             }
         } catch (SQLException e) {
+            System.err.println("Error getting user by username: " + e.getMessage());
             e.printStackTrace();
         }
-
-        return user;
+        return null;
     }
 }
