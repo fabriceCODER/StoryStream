@@ -1,8 +1,8 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="jakarta.tags.core" %>
         <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 
-            <fmt:setLocale value="${param.lang != null ? param.lang : 'en'}" />
+            <fmt:setLocale value="${not empty param.lang ? param.lang : 'en'}" />
             <fmt:setBundle basename="messages" />
 
             <c:set var="title" value="Register" scope="request" />
@@ -38,7 +38,8 @@
                                 <!-- Registration Form -->
                                 <form action="${pageContext.request.contextPath}/auth/register" method="post"
                                     class="needs-validation" novalidate>
-                                    <input type="hidden" name="lang" value="${param.lang != null ? param.lang : 'en'}">
+                                    <input type="hidden" name="lang"
+                                        value="${not empty param.lang ? param.lang : 'en'}">
                                     <div class="form-group mb-3">
                                         <label for="username" class="form-label">
                                             <i class="fas fa-user"></i>
@@ -62,8 +63,7 @@
                                         </div>
                                         <small class="form-text text-muted">
                                             <i class="fas fa-info-circle"></i>
-                                            Password must be at least 6 characters long and contain both letters and
-                                            numbers.
+                                            <fmt:message key="register.password.requirements" />
                                         </small>
                                     </div>
 

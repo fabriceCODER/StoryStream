@@ -15,7 +15,8 @@ import java.io.IOException;
     "/admin/dashboard",
     "/books/*",
     "/cart/*",
-    "/profile"
+    "/profile",
+    "/error/*"
 })
 public class ViewDispatcherServlet extends HttpServlet {
     
@@ -33,23 +34,35 @@ public class ViewDispatcherServlet extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/login");
                 return;
             case "/login":
-                jspPage = "/auth/login.jsp";
+                jspPage = "/WEB-INF/views/auth/login.jsp";
                 break;
             case "/register":
-                jspPage = "/auth/register.jsp";
+                jspPage = "/WEB-INF/views/auth/register.jsp";
                 break;
             case "/dashboard":
-                jspPage = "/views/users/dashboard.jsp";
+                jspPage = "/WEB-INF/views/users/dashboard.jsp";
                 break;
             case "/admin/dashboard":
-                jspPage = "/views/admin/admin_dashboard.jsp";
+                jspPage = "/WEB-INF/views/admin/dashboard.jsp";
                 break;
             case "/profile":
-                jspPage = "/views/users/profile.jsp";
+                jspPage = "/WEB-INF/views/users/profile.jsp";
+                break;
+            case "/error/404":
+                jspPage = "/WEB-INF/views/errors/404.jsp";
+                break;
+            case "/error/500":
+                jspPage = "/WEB-INF/views/errors/500.jsp";
                 break;
             default:
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                return;
+                if (path.startsWith("/books/")) {
+                    jspPage = "/WEB-INF/views/books/browse.jsp";
+                } else if (path.startsWith("/cart/")) {
+                    jspPage = "/WEB-INF/views/cart/cart.jsp";
+                } else {
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                    return;
+                }
         }
 
         // Preserve language parameter if present

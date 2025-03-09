@@ -1,8 +1,8 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="jakarta.tags.core" %>
         <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 
-            <fmt:setLocale value="${param.lang != null ? param.lang : 'en'}" />
+            <fmt:setLocale value="${not empty param.lang ? param.lang : 'en'}" />
             <fmt:setBundle basename="messages" />
 
             <c:set var="title" value="Login" scope="request" />
@@ -38,7 +38,8 @@
                                 <!-- Login Form -->
                                 <form action="${pageContext.request.contextPath}/auth/login" method="post"
                                     class="needs-validation" novalidate>
-                                    <input type="hidden" name="lang" value="${param.lang != null ? param.lang : 'en'}">
+                                    <input type="hidden" name="lang"
+                                        value="${not empty param.lang ? param.lang : 'en'}">
                                     <div class="form-group mb-3">
                                         <label for="username" class="form-label">
                                             <i class="fas fa-user"></i>
@@ -67,7 +68,7 @@
                                             <i class="fas fa-sign-in-alt"></i>
                                             <fmt:message key="login.submit" />
                                         </button>
-                                        <a href="/register${not empty param.lang ? '?lang='.concat(param.lang) : ''}"
+                                        <a href="${pageContext.request.contextPath}/register${not empty param.lang ? '?lang='.concat(param.lang) : ''}"
                                             class="btn btn-link">
                                             <i class="fas fa-user-plus"></i>
                                             <fmt:message key="login.register" />
