@@ -9,7 +9,7 @@
 <body>
 <div class="container mt-5">
     <h2 class="text-center">Add New Book</h2>
-    <form action="bookController" method="post">
+    <form action="${pageContext.request.contextPath}/BookStore_war_exploded/books" method="post">
         <div class="mb-3">
             <label class="form-label">Book Title</label>
             <input type="text" class="form-control" name="title" required>
