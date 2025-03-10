@@ -60,6 +60,33 @@
                                                   </li>
                                              </c:if>
                                         </ul>
+                                        <div class="nav-item dropdown">
+                                             <a class="nav-link dropdown-toggle" href="#" id="languageDropdown"
+                                                  role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                  <i class="fas fa-globe"></i>
+                                                  <c:choose>
+                                                       <c:when test="${param.lang eq 'en'}">English</c:when>
+                                                       <c:when test="${param.lang eq 'rw'}">Kinyarwanda</c:when>
+                                                       <c:when test="${param.lang eq 'sw'}">Kiswahili</c:when>
+                                                       <c:otherwise>English</c:otherwise>
+                                                  </c:choose>
+                                             </a>
+                                             <ul class="dropdown-menu dropdown-menu-end"
+                                                  aria-labelledby="languageDropdown">
+                                                  <li><a class="dropdown-item"
+                                                            href="?lang=en${not empty param.error ? '&error='.concat(param.error) : ''}${not empty param.message ? '&message='.concat(param.message) : ''}">
+                                                            <i class="fas fa-flag"></i> English</a>
+                                                  </li>
+                                                  <li><a class="dropdown-item"
+                                                            href="?lang=rw${not empty param.error ? '&error='.concat(param.error) : ''}${not empty param.message ? '&message='.concat(param.message) : ''}">
+                                                            <i class="fas fa-flag"></i> Kinyarwanda</a>
+                                                  </li>
+                                                  <li><a class="dropdown-item"
+                                                            href="?lang=sw${not empty param.error ? '&error='.concat(param.error) : ''}${not empty param.message ? '&message='.concat(param.message) : ''}">
+                                                            <i class="fas fa-flag"></i> Kiswahili</a>
+                                                  </li>
+                                             </ul>
+                                        </div>
                                         <ul class="navbar-nav">
                                              <li class="nav-item">
                                                   <a class="nav-link" href="${pageContext.request.contextPath}/profile">

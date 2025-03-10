@@ -14,18 +14,22 @@
     <!-- Security Constraint to prevent direct JSP access -->
     <security-constraint>
         <web-resource-collection>
-            <web-resource-name>Prevent JSP Direct Access</web-resource-name>
-            <url-pattern>*.jsp</url-pattern>
+            <web-resource-name>Protected JSP Resources</web-resource-name>
+            <url-pattern>/WEB-INF/views/*</url-pattern>
+            <url-pattern>/WEB-INF/includes/*</url-pattern>
         </web-resource-collection>
         <auth-constraint />
     </security-constraint>
 
-    <!-- Allow access to specific JSP files through the controller -->
+    <!-- Allow access to public JSP files -->
     <security-constraint>
         <web-resource-collection>
-            <web-resource-name>Allow Specific JSP Access</web-resource-name>
+            <web-resource-name>Public Resources</web-resource-name>
             <url-pattern>/auth/*</url-pattern>
             <url-pattern>/views/*</url-pattern>
+            <url-pattern>/css/*</url-pattern>
+            <url-pattern>/js/*</url-pattern>
+            <url-pattern>/assets/*</url-pattern>
         </web-resource-collection>
     </security-constraint>
 
@@ -42,11 +46,11 @@
     <!-- Error Pages -->
     <error-page>
         <error-code>404</error-code>
-        <location>/WEB-INF/views/errors/404.jsp</location>
+        <location>/error.jsp</location>
     </error-page>
     <error-page>
         <error-code>500</error-code>
-        <location>/WEB-INF/views/errors/500.jsp</location>
+        <location>/error.jsp</location>
     </error-page>
 
     <!-- JSP Configuration -->

@@ -9,13 +9,15 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.io.IOException;
 import org.mindrot.jbcrypt.BCrypt;
+
+import java.io.IOException;
 
 @WebServlet(urlPatterns = {
     "/auth/login",
     "/auth/register",
-    "/auth/logout"
+    "/auth/logout",
+    "/user/*"
 })
 public class UserController extends HttpServlet {
     private final IUserService userService = new UserServiceImpl();
@@ -23,24 +25,29 @@ public class UserController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String servletPath = request.getServletPath();
-        String pathInfo = request.getPathInfo();
-        String lang = request.getParameter("lang");
-        
+
         try {
-            switch (servletPath) {
-                case "/auth/login":
-                    handleLogin(request, response);
-                    break;
-                case "/auth/register":
-                    handleRegistration(request, response);
-                    break;
-                default:
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            if (servletPath.startsWith("/auth")) {
+                handleAuthRequest(request, response);
+            } else if (servletPath.startsWith("/user")) {
+                handleUserRequest(request, response);
             }
         } catch (Exception e) {
             System.err.println("Error in UserController.doPost: " + e.getMessage());
             e.printStackTrace();
-            redirectWithLang(response, request.getContextPath() + "/login", "error=An unexpected error occurred", lang);
+            response.sendRedirect(request.getContextPath() + "/login?error=An unexpected error occurred");
+        }
+    }
+
+    private void handleAuthRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String path = request.getServletPath();
+
+        if (path.endsWith("/login")) {
+            handleLogin(request, response);
+        } else if (path.endsWith("/register")) {
+            handleRegistration(request, response);
+        } else {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
 
@@ -52,7 +59,8 @@ public class UserController extends HttpServlet {
         try {
             // Validate input
             if (username == null || username.trim().isEmpty() || password == null || password.trim().isEmpty()) {
-                redirectWithLang(response, request.getContextPath() + "/login", "error=Please fill in all fields", lang);
+                response.sendRedirect(request.getContextPath() + "/login?error=Please fill in all fields" + 
+                    (lang != null ? "&lang=" + lang : ""));
                 return;
             }
 
@@ -62,26 +70,33 @@ public class UserController extends HttpServlet {
             // Check if user exists and password matches
             if (user != null && BCrypt.checkpw(password, user.getPassword())) {
                 // Create session
-                HttpSession session = request.getSession();
+                HttpSession session = request.getSession(true); // Create new session if none exists
                 session.setAttribute("user", user);
                 session.setAttribute("userRole", user.getRole().toLowerCase());
                 session.setAttribute("username", user.getUsername());
-                session.setAttribute("lang", lang); // Preserve language preference
+                if (lang != null) {
+                    session.setAttribute("lang", lang);
+                }
 
                 System.out.println("User logged in successfully: " + username + " with role: " + user.getRole());
 
                 // Redirect based on role
-                String redirectPath = "admin".equalsIgnoreCase(user.getRole()) ? 
-                    "/admin/dashboard" : "/dashboard";
-                redirectWithLang(response, request.getContextPath() + redirectPath, null, lang);
+                String redirectUrl = request.getContextPath() + 
+                    ("admin".equalsIgnoreCase(user.getRole()) ? "/admin/dashboard" : "/dashboard");
+                if (lang != null) {
+                    redirectUrl += "?lang=" + lang;
+                }
+                response.sendRedirect(redirectUrl);
             } else {
                 System.out.println("Login failed for user: " + username);
-                redirectWithLang(response, request.getContextPath() + "/login", "error=Invalid username or password", lang);
+                response.sendRedirect(request.getContextPath() + "/login?error=Invalid username or password" + 
+                    (lang != null ? "&lang=" + lang : ""));
             }
         } catch (Exception e) {
             System.err.println("Error in handleLogin: " + e.getMessage());
             e.printStackTrace();
-            redirectWithLang(response, request.getContextPath() + "/login", "error=An error occurred during login", lang);
+            response.sendRedirect(request.getContextPath() + "/login?error=An error occurred during login" + 
+                (lang != null ? "&lang=" + lang : ""));
         }
     }
 
@@ -93,29 +108,32 @@ public class UserController extends HttpServlet {
 
         try {
             // Validate input
-            if (username == null || username.trim().isEmpty() || 
-                password == null || password.trim().isEmpty() || 
+            if (username == null || username.trim().isEmpty() ||
+                password == null || password.trim().isEmpty() ||
                 confirmPassword == null || confirmPassword.trim().isEmpty()) {
-                redirectWithLang(response, request.getContextPath() + "/register", "error=Please fill in all fields", lang);
+                response.sendRedirect(request.getContextPath() + "/register?error=Please fill in all fields" + 
+                    (lang != null ? "&lang=" + lang : ""));
                 return;
             }
 
             // Check password length
             if (password.length() < 6) {
-                redirectWithLang(response, request.getContextPath() + "/register", 
-                    "error=Password must be at least 6 characters long", lang);
+                response.sendRedirect(request.getContextPath() + "/register?error=Password must be at least 6 characters long" + 
+                    (lang != null ? "&lang=" + lang : ""));
                 return;
             }
 
             // Check password match
             if (!password.equals(confirmPassword)) {
-                redirectWithLang(response, request.getContextPath() + "/register", "error=Passwords do not match", lang);
+                response.sendRedirect(request.getContextPath() + "/register?error=Passwords do not match" + 
+                    (lang != null ? "&lang=" + lang : ""));
                 return;
             }
 
             // Check if username exists
             if (userService.getUserByUsername(username) != null) {
-                redirectWithLang(response, request.getContextPath() + "/register", "error=Username already exists", lang);
+                response.sendRedirect(request.getContextPath() + "/register?error=Username already exists" + 
+                    (lang != null ? "&lang=" + lang : ""));
                 return;
             }
 
@@ -124,58 +142,69 @@ public class UserController extends HttpServlet {
             User user = new User(username, hashedPassword);
             user.setRole("user"); // Set default role
 
-            // Register user
+            // Register user and auto-login
             if (userService.registerUser(user)) {
-                System.out.println("User registered successfully: " + username);
-                redirectWithLang(response, request.getContextPath() + "/login", 
-                    "message=Registration successful. Please login.", lang);
+                // Create session for auto-login
+                HttpSession session = request.getSession(true);
+                session.setAttribute("user", user);
+                session.setAttribute("userRole", user.getRole().toLowerCase());
+                session.setAttribute("username", user.getUsername());
+                if (lang != null) {
+                    session.setAttribute("lang", lang);
+                }
+
+                System.out.println("User registered and logged in successfully: " + username);
+                response.sendRedirect(request.getContextPath() + "/dashboard" + 
+                    (lang != null ? "?lang=" + lang : ""));
             } else {
                 System.err.println("Failed to register user: " + username);
-                redirectWithLang(response, request.getContextPath() + "/register", "error=Registration failed", lang);
+                response.sendRedirect(request.getContextPath() + "/register?error=Registration failed" + 
+                    (lang != null ? "&lang=" + lang : ""));
             }
         } catch (Exception e) {
             System.err.println("Error in handleRegistration: " + e.getMessage());
             e.printStackTrace();
-            redirectWithLang(response, request.getContextPath() + "/register", 
-                "error=An error occurred during registration", lang);
+            response.sendRedirect(request.getContextPath() + "/register?error=An error occurred during registration" + 
+                (lang != null ? "&lang=" + lang : ""));
         }
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String servletPath = request.getServletPath();
-        String lang = request.getParameter("lang");
-        
+
         try {
             if ("/auth/logout".equals(servletPath)) {
                 HttpSession session = request.getSession(false);
                 if (session != null) {
-                    lang = (String) session.getAttribute("lang"); // Preserve language before invalidating session
                     session.invalidate();
                 }
-                redirectWithLang(response, request.getContextPath() + "/login", "message=Logged out successfully", lang);
+                response.sendRedirect(request.getContextPath() + "/login?message=Logged out successfully");
+            } else if (servletPath.startsWith("/user")) {
+                handleUserGetRequest(request, response);
             }
         } catch (Exception e) {
             System.err.println("Error in UserController.doGet: " + e.getMessage());
             e.printStackTrace();
-            redirectWithLang(response, request.getContextPath() + "/login", "error=An unexpected error occurred", lang);
+            response.sendRedirect(request.getContextPath() + "/login?error=An unexpected error occurred");
         }
     }
 
-    private void redirectWithLang(HttpServletResponse response, String path, String queryParam, String lang) 
-            throws IOException {
-        StringBuilder redirectUrl = new StringBuilder(path);
-        boolean hasQuery = false;
-
-        if (lang != null && !lang.trim().isEmpty()) {
-            redirectUrl.append("?lang=").append(lang);
-            hasQuery = true;
+    private void handleUserGetRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String pathInfo = request.getPathInfo();
+        if (pathInfo == null || pathInfo.equals("/")) {
+            request.getRequestDispatcher("/views/users/profile.jsp").forward(request, response);
+        } else {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
+    }
 
-        if (queryParam != null && !queryParam.trim().isEmpty()) {
-            redirectUrl.append(hasQuery ? "&" : "?").append(queryParam);
+    private void handleUserRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String pathInfo = request.getPathInfo();
+        if (pathInfo == null || pathInfo.equals("/")) {
+            request.getRequestDispatcher("/views/users/profile.jsp").forward(request, response);
+        } else {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
-
-        response.sendRedirect(redirectUrl.toString());
     }
 }
