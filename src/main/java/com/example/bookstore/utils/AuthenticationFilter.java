@@ -17,10 +17,13 @@ public class AuthenticationFilter implements Filter {
         "/auth/register",
         "/auth/login.jsp",
         "/auth/register.jsp",
+        "/register",
+        "/login",
         "/css/",
         "/js/",
         "/images/",
-        "/error.jsp"
+        "/error.jsp",
+        "/"
     );
 
     @Override

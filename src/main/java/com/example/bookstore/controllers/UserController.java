@@ -265,6 +265,7 @@ public class UserController extends HttpServlet {
         if (!newPassword.equals(confirmPassword)) {
             response.sendRedirect(request.getContextPath() + "/user/profile?error=New passwords do not match");
             return;
+
         }
 
         // Update password logic here
