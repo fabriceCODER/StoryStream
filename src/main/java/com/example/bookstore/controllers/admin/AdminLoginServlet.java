@@ -10,19 +10,22 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebServlet("/auth/login")
+@WebServlet("/admin/auth/login")
 public class AdminLoginServlet extends BaseAdminController {
     
-    private static final String LOGIN_JSP = "/auth/login.jsp";
-    private static final String DASHBOARD_URL = "/views/admin/dashboard";
+    private static final String LOGIN_JSP = "/views/admin/auth/login.jsp";
+    private static final String DASHBOARD_URL = "/admin/dashboard";
     private final IUserDAO userDAO = new UserDAOImpl();
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        // Check if admin is already logged in
-        if (isAdminLoggedIn(request)) {
-            response.sendRedirect(request.getContextPath() + DASHBOARD_URL);
+        // Check if already logged in
+        HttpSession session = request.getSession(false);
+        if (session != null && session.getAttribute("user") != null) {
+            String userRole = (String) session.getAttribute("userRole");
+            response.sendRedirect(request.getContextPath() + 
+                ("admin".equalsIgnoreCase(userRole) ? DASHBOARD_URL : "/user/dashboard"));
             return;
         }
         
@@ -37,51 +40,44 @@ public class AdminLoginServlet extends BaseAdminController {
         String password = request.getParameter("password");
         String lang = getLanguage(request);
         
-        // Validate input
-        if (username == null || username.trim().isEmpty() 
-                || password == null || password.trim().isEmpty()) {
-            redirectWithError(response, request.getContextPath(), 
-                    "admin.error.credentials.required", lang);
+        // Quick validation
+        if (username == null || password == null || username.trim().isEmpty() || password.trim().isEmpty()) {
+            redirectWithError(request, response, "admin.error.credentials.required");
             return;
         }
         
         try {
+            // Authenticate user
             User user = userDAO.authenticate(username, password);
+            if (user == null) {
+                redirectWithError(request, response, "admin.error.invalid.credentials");
+                return;
+            }
+
+            // Create session
+            HttpSession session = request.getSession();
+            session.setAttribute("user", user);
+            session.setAttribute("userRole", user.getRole().toLowerCase());
+            session.setAttribute("username", user.getUsername());
+            if (lang != null) session.setAttribute("lang", lang);
             
-            if (user != null && "admin".equalsIgnoreCase(user.getRole())) {
-                // Create session and set attributes
-                HttpSession session = request.getSession();
-                session.setAttribute("user", user);
-                session.setAttribute("userRole", "admin");
-                session.setAttribute("username", user.getUsername());
-                
-                // Log successful login
-                System.out.println("Admin login successful: " + username);
-                
-                // Redirect to dashboard
-                response.sendRedirect(request.getContextPath() + DASHBOARD_URL);
+            // Redirect based on role
+            String redirectUrl = getRedirectUrl(request);
+            if (redirectUrl != null) {
+                response.sendRedirect(request.getContextPath() + redirectUrl);
             } else {
-                // Log failed login attempt
-                System.out.println("Admin login failed: " + username);
-                
-                // Redirect with error
-                redirectWithError(response, request.getContextPath(), 
-                        "admin.error.invalid.credentials", lang);
+                response.sendRedirect(request.getContextPath() + 
+                    ("admin".equalsIgnoreCase(user.getRole()) ? DASHBOARD_URL : "/user/dashboard"));
             }
         } catch (Exception e) {
-            // Log the error
-            System.err.println("Error during admin login: " + e.getMessage());
-            e.printStackTrace();
-            
-            // Redirect with error
-            redirectWithError(response, request.getContextPath(), 
-                    "admin.error.system", lang);
+            System.err.println("Login error: " + e.getMessage());
+            redirectWithError(request, response, "admin.error.system");
         }
     }
     
-    private void redirectWithError(HttpServletResponse response, String contextPath, 
-            String errorKey, String lang) throws IOException {
-        response.sendRedirect(String.format("%s/auth/login?error=%s&lang=%s",
-                contextPath, errorKey, lang));
+    private void redirectWithError(HttpServletRequest request, HttpServletResponse response, String errorKey) 
+            throws IOException {
+        response.sendRedirect(String.format("%s/admin/auth/login?error=%s&lang=%s",
+                request.getContextPath(), errorKey, getLanguage(request)));
     }
 } 

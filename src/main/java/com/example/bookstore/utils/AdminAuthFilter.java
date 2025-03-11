@@ -19,9 +19,17 @@ public class AdminAuthFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
+        
+        String servletPath = httpRequest.getServletPath();
+        System.out.println("AdminAuthFilter processing: " + servletPath);
+        
+        // Skip authentication for login and registration paths
+        if (servletPath.startsWith("/admin/auth/")) {
+            chain.doFilter(request, response);
+            return;
+        }
+        
         HttpSession session = httpRequest.getSession(false);
-
-        System.out.println("AdminAuthFilter processing: " + httpRequest.getServletPath());
 
         // Check if user is authenticated
         if (session == null || session.getAttribute("user") == null) {

@@ -8,11 +8,12 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.mindrot.jbcrypt.BCrypt;
 
 @WebServlet("/auth/register")
 public class AdminRegistrationServlet extends BaseAdminController {
 
-    private static final String REGISTER_JSP = "/auth/register.jsp";
+    private static final String REGISTER_JSP = "/views/admin/auth/register.jsp";
     private static final String LOGIN_URL = "/auth/login";
     private static final String ADMIN_CODE = "ADMIN123"; // In production, use secure storage
     private final IUserDAO userDAO = new UserDAOImpl();
@@ -20,9 +21,9 @@ public class AdminRegistrationServlet extends BaseAdminController {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // If already logged in as admin, redirect to dashboard
+        // If already logged in, redirect to appropriate dashboard
         if (isAdminLoggedIn(request)) {
-            response.sendRedirect(request.getContextPath() + "/auth/admin_dashboard");
+            response.sendRedirect(request.getContextPath() + "/admin/dashboard");
             return;
         }
         request.getRequestDispatcher(REGISTER_JSP).forward(request, response);
@@ -38,79 +39,60 @@ public class AdminRegistrationServlet extends BaseAdminController {
         String adminCode = request.getParameter("adminCode");
         String lang = getLanguage(request);
 
-        // Validate input
+        // Quick validation
         if (!validateInput(username, email, password, confirmPassword, adminCode)) {
-            redirectWithError(response, request.getContextPath(),
-                    "admin.error.fields.required", lang);
+            redirectWithError(request, response, "admin.error.fields.required");
             return;
         }
 
-        // Validate password match
+        // Password validation
         if (!password.equals(confirmPassword)) {
-            redirectWithError(response, request.getContextPath(),
-                    "admin.error.password.mismatch", lang);
+            redirectWithError(request, response, "admin.error.password.mismatch");
             return;
         }
 
-        // Validate admin code
+        // Admin code validation
         if (!ADMIN_CODE.equals(adminCode)) {
-            redirectWithError(response, request.getContextPath(),
-                    "admin.error.invalid.code", lang);
+            redirectWithError(request, response, "admin.error.invalid.code");
             return;
         }
 
         try {
-            // Check if username exists
+            // Check username availability
             if (userDAO.findByUsername(username) != null) {
-                redirectWithError(response, request.getContextPath(),
-                        "admin.error.username.exists", lang);
+                redirectWithError(request, response, "admin.error.username.exists");
                 return;
             }
 
-            // Create and save admin user
-            User admin = createAdminUser(username, email, password);
+            // Create and save admin user with hashed password
+            User admin = new User();
+            admin.setUsername(username);
+            admin.setEmail(email);
+            admin.setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
+            admin.setRole("admin");
             userDAO.save(admin);
 
-            // Log successful registration
-            System.out.println("Admin registration successful: " + username);
-
-            // Redirect to login with success message
+            // Redirect to login
             response.sendRedirect(String.format("%s%s?message=%s&lang=%s",
                     request.getContextPath(), LOGIN_URL,
                     "admin.success.registration", lang));
 
         } catch (Exception e) {
-            // Log the error
-            System.err.println("Error during admin registration: " + e.getMessage());
-            e.printStackTrace();
-
-            // Redirect with error
-            redirectWithError(response, request.getContextPath(),
-                    "admin.error.system", lang);
+            System.err.println("Registration error: " + e.getMessage());
+            redirectWithError(request, response, "admin.error.system");
         }
     }
 
     private boolean validateInput(String... inputs) {
         for (String input : inputs) {
-            if (input == null || input.trim().isEmpty()) {
-                return false;
-            }
+            if (input == null || input.trim().isEmpty()) return false;
         }
         return true;
     }
 
-    private User createAdminUser(String username, String email, String password) {
-        User admin = new User();
-        admin.setUsername(username);
-        admin.setEmail(email);
-        admin.setPassword(password);
-        admin.setRole("admin");
-        return admin;
-    }
-
-    private void redirectWithError(HttpServletResponse response, String contextPath,
-                                   String errorKey, String lang) throws IOException {
+    private void redirectWithError(HttpServletRequest request, HttpServletResponse response, String errorKey) 
+            throws IOException {
         response.sendRedirect(String.format("%s/auth/register?error=%s&lang=%s",
-                contextPath, errorKey, lang));
+                request.getContextPath(), errorKey, getLanguage(request)));
     }
 }

@@ -2,6 +2,8 @@ package com.example.bookstore.controllers.admin;
 
 import com.example.bookstore.dao.IUserDAO;
 import com.example.bookstore.dao.IBookDAO;
+import com.example.bookstore.daoImpl.UserDAOImpl;
+import com.example.bookstore.daoImpl.BookDAOImpl;
 import com.example.bookstore.models.Book;
 import com.example.bookstore.models.User;
 import jakarta.servlet.ServletException;
@@ -17,12 +19,20 @@ import java.util.Map;
 public class AdminDashboardServlet extends BaseAdminController {
     
     private static final String DASHBOARD_JSP = "/WEB-INF/views/admin/dashboard.jsp";
+    private final IUserDAO userDAO = new UserDAOImpl();
+    private final IBookDAO bookDAO = new BookDAOImpl();
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
+        // Check if admin is logged in
+        if (!isAdminLoggedIn(request)) {
+            response.sendRedirect(request.getContextPath() + "/admin/auth/login");
+            return;
+        }
+        
         try {
-            // Get statistics
+            // Get dashboard statistics
             Map<String, Object> stats = getDashboardStats();
             
             // Set attributes for JSP
@@ -30,125 +40,25 @@ public class AdminDashboardServlet extends BaseAdminController {
                 request.setAttribute(stat.getKey(), stat.getValue());
             }
             
-            // Get any success/error messages from the session
-            String message = (String) request.getSession().getAttribute("dashboardMessage");
-            String error = (String) request.getSession().getAttribute("dashboardError");
-            
-            if (message != null) {
-                request.setAttribute("message", message);
-                request.getSession().removeAttribute("dashboardMessage");
-            }
-            if (error != null) {
-                request.setAttribute("error", error);
-                request.getSession().removeAttribute("dashboardError");
-            }
-            
-            // Forward to dashboard JSP
+            // Forward to dashboard page
             request.getRequestDispatcher(DASHBOARD_JSP).forward(request, response);
-            
         } catch (Exception e) {
-            // Log the error
-            System.err.println("Error loading admin dashboard: " + e.getMessage());
+            System.err.println("Error loading dashboard: " + e.getMessage());
             e.printStackTrace();
-            
-            // Set error message and forward
-            request.setAttribute("error", "admin.error.dashboard.load");
-            request.getRequestDispatcher(DASHBOARD_JSP).forward(request, response);
+            response.sendRedirect(request.getContextPath() + "/admin/auth/login?error=admin.error.dashboard.load");
         }
     }
     
     private Map<String, Object> getDashboardStats() {
         Map<String, Object> stats = new HashMap<>();
         try {
-            IUserDAO userDAO = new IUserDAO() {
-                @Override
-                public User loginUser(String username, String password) {
-                    return null;
-                }
-
-                @Override
-                public boolean registerUser(User user) {
-                    return false;
-                }
-
-                @Override
-                public User getUserById(int id) {
-                    return null;
-                }
-
-                @Override
-                public User getUserByUsername(String username) {
-                    return null;
-                }
-
-                @Override
-                public User authenticate(String username, String password) {
-                    return null;
-                }
-
-                @Override
-                public User findByUsername(String username) {
-                    return null;
-                }
-
-                @Override
-                public void save(User user) {
-
-                }
-
-                @Override
-                public long getTotalUsers() {
-                    return 0;
-                }
-            };
-            IBookDAO bookDAO = new IBookDAO() {
-                @Override
-                public List<Book> getAllBooks() {
-                    return List.of();
-                }
-
-                @Override
-                public Book getBookById(int id) {
-                    return null;
-                }
-
-                @Override
-                public boolean addBook(Book book) {
-                    return false;
-                }
-
-                @Override
-                public boolean updateBook(Book book) {
-                    return false;
-                }
-
-                @Override
-                public boolean deleteBook(int id) {
-                    return false;
-                }
-
-                @Override
-                public List<Book> getRecentBooks(int limit) {
-                    return List.of();
-                }
-
-                @Override
-                public Object getTotalBooks() {
-                    return null;
-                }
-
-                @Override
-                public Object getLowStockBooks() {
-                    return null;
-                }
-            };
-
-            
             // Get various statistics
             stats.put("totalUsers", userDAO.getTotalUsers());
             stats.put("totalBooks", bookDAO.getTotalBooks());
             stats.put("lowStockBooks", bookDAO.getLowStockBooks());
-
+            stats.put("totalOrders", 0); // TODO: Implement OrderDAO
+            stats.put("totalRevenue", 0.0); // TODO: Implement OrderDAO
+            stats.put("recentOrders", List.of()); // TODO: Implement OrderDAO
             
         } catch (Exception e) {
             System.err.println("Error getting dashboard stats: " + e.getMessage());
