@@ -1,71 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
-                             https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
-         version="6.0">
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
+         version="5.0">
 
-    <!-- Welcome file list -->
+    <display-name>BookStore</display-name>
+
+    <!-- Welcome File List -->
     <welcome-file-list>
-        <welcome-file>login</welcome-file>
-        <welcome-file>index</welcome-file>
+        <welcome-file>home.jsp</welcome-file>
     </welcome-file-list>
-
-    <!-- Security Constraint to prevent direct JSP access -->
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>Protected JSP Resources</web-resource-name>
-            <url-pattern>/WEB-INF/views/*</url-pattern>
-            <url-pattern>/WEB-INF/includes/*</url-pattern>
-        </web-resource-collection>
-        <auth-constraint />
-    </security-constraint>
-
-    <!-- Allow access to public JSP files -->
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>Public Resources</web-resource-name>
-            <url-pattern>/auth/*</url-pattern>
-            <url-pattern>/views/*</url-pattern>
-            <url-pattern>/css/*</url-pattern>
-            <url-pattern>/js/*</url-pattern>
-            <url-pattern>/assets/*</url-pattern>
-        </web-resource-collection>
-    </security-constraint>
-
-    <!-- Session configuration -->
-    <session-config>
-        <session-timeout>30</session-timeout>
-        <cookie-config>
-            <http-only>true</http-only>
-            <secure>false</secure>
-        </cookie-config>
-        <tracking-mode>COOKIE</tracking-mode>
-    </session-config>
 
     <!-- Error Pages -->
     <error-page>
         <error-code>404</error-code>
         <location>/error.jsp</location>
     </error-page>
+
     <error-page>
         <error-code>500</error-code>
         <location>/error.jsp</location>
     </error-page>
 
-    <!-- JSP Configuration -->
-    <jsp-config>
-        <jsp-property-group>
-            <url-pattern>*.jsp</url-pattern>
-            <page-encoding>UTF-8</page-encoding>
-            <scripting-invalid>false</scripting-invalid>
-            <include-prelude>/WEB-INF/includes/header.jsp</include-prelude>
-            <include-coda>/WEB-INF/includes/footer.jsp</include-coda>
-            <trim-directive-whitespaces>true</trim-directive-whitespaces>
-        </jsp-property-group>
-    </jsp-config>
+    <!-- Session Configuration -->
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
 
-    <!-- MIME type mappings -->
+    <!-- Security Constraints -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Admin Area</web-resource-name>
+            <url-pattern>/admin/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <!-- MIME Type Mappings -->
     <mime-mapping>
         <extension>css</extension>
         <mime-type>text/css</mime-type>
@@ -75,4 +48,9 @@
         <mime-type>application/javascript</mime-type>
     </mime-mapping>
 
+    <!-- Context Parameters -->
+    <context-param>
+        <param-name>defaultLanguage</param-name>
+        <param-value>en</param-value>
+    </context-param>
 </web-app>

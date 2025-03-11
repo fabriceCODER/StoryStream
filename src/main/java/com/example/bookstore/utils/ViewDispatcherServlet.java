@@ -13,7 +13,6 @@ import java.io.IOException;
     "/login",
     "/register",
     "/dashboard",
-    "/admin/dashboard",
     "/books/*",
     "/cart/*",
     "/profile",
@@ -59,52 +58,57 @@ public class ViewDispatcherServlet extends HttpServlet {
                     response.sendRedirect(request.getContextPath() + "/login?lang=" + lang);
                     return;
                 }
-
-                // Check admin access for admin paths
-                if (path.startsWith("/admin/")) {
-                    String userRole = (String) session.getAttribute("userRole");
-                    if (!"admin".equalsIgnoreCase(userRole)) {
-                        response.sendRedirect(request.getContextPath() + "/dashboard?error=Access denied&lang=" + lang);
-                        return;
-                    }
-                }
             }
 
             // Map URLs to JSP pages
             switch (path) {
                 case "/":
+                    // If user is logged in, redirect to appropriate dashboard
+                    if (session != null && session.getAttribute("user") != null) {
+                        String userRole = (String) session.getAttribute("userRole");
+                        if ("admin".equalsIgnoreCase(userRole)) {
+                            response.sendRedirect(request.getContextPath() + "/admin/dashboard");
+                        } else {
+                            response.sendRedirect(request.getContextPath() + "/dashboard");
+                        }
+                        return;
+                    }
                     response.sendRedirect(request.getContextPath() + "/login?lang=" + lang);
                     return;
                 case "/login":
-                    // Redirect to dashboard if already logged in
+                    // Redirect to appropriate dashboard if already logged in
                     if (session != null && session.getAttribute("user") != null) {
                         String userRole = (String) session.getAttribute("userRole");
-                        String redirectPath = "admin".equalsIgnoreCase(userRole) ? "/admin/dashboard" : "/dashboard";
-                        response.sendRedirect(request.getContextPath() + redirectPath + "?lang=" + lang);
+                        if ("admin".equalsIgnoreCase(userRole)) {
+                            response.sendRedirect(request.getContextPath() + "/admin/dashboard");
+                        } else {
+                            response.sendRedirect(request.getContextPath() + "/dashboard");
+                        }
                         return;
                     }
                     jspPage = "/auth/login.jsp";
                     break;
                 case "/register":
-                    // Redirect to dashboard if already logged in
+                    // Redirect to appropriate dashboard if already logged in
                     if (session != null && session.getAttribute("user") != null) {
                         String userRole = (String) session.getAttribute("userRole");
-                        String redirectPath = "admin".equalsIgnoreCase(userRole) ? "/admin/dashboard" : "/dashboard";
-                        response.sendRedirect(request.getContextPath() + redirectPath + "?lang=" + lang);
+                        if ("admin".equalsIgnoreCase(userRole)) {
+                            response.sendRedirect(request.getContextPath() + "/admin/dashboard");
+                        } else {
+                            response.sendRedirect(request.getContextPath() + "/dashboard");
+                        }
                         return;
                     }
                     jspPage = "/auth/register.jsp";
                     break;
                 case "/dashboard":
+                    // Check user role and redirect admin to admin dashboard
                     String userRole = (String) session.getAttribute("userRole");
                     if ("admin".equalsIgnoreCase(userRole)) {
-                        response.sendRedirect(request.getContextPath() + "/admin/dashboard?lang=" + lang);
+                        response.sendRedirect(request.getContextPath() + "/admin/dashboard");
                         return;
                     }
                     jspPage = "/views/users/dashboard.jsp";
-                    break;
-                case "/admin/dashboard":
-                    jspPage = "/views/admin/dashboard.jsp";
                     break;
                 case "/profile":
                     jspPage = "/views/users/profile.jsp";

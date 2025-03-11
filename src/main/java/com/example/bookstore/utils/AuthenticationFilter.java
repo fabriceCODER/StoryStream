@@ -13,17 +13,18 @@ import java.util.List;
 public class AuthenticationFilter implements Filter {
 
     private static final List<String> PUBLIC_PATHS = Arrays.asList(
-            "/auth/login.jsp",
-            "/auth/register.jsp",
-            "/auth/login",
-            "/auth/register",
-            "/home.jsp",
-            "/index.jsp"
+        "/auth/login",
+        "/auth/register",
+        "/auth/login.jsp",
+        "/auth/register.jsp",
+        "/css/",
+        "/js/",
+        "/images/",
+        "/error.jsp"
     );
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        // Initialization if needed
     }
 
     @Override
@@ -31,54 +32,48 @@ public class AuthenticationFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-
-        // Get the request URI without the context path
-        String requestPath = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
-
+        
+        String requestPath = httpRequest.getServletPath();
+        
         // Debug logging
-        System.out.println("Request URI: " + httpRequest.getRequestURI());
-        System.out.println("Context Path: " + httpRequest.getContextPath());
-        System.out.println("Request Path: " + requestPath);
-
+        System.out.println("Processing request: " + requestPath);
+        
         // Check if it's a public resource
         if (isPublicResource(requestPath)) {
-            System.out.println("Allowing public resource: " + requestPath);
+            System.out.println("Public resource accessed: " + requestPath);
             chain.doFilter(request, response);
             return;
         }
 
-        // Check for authentication
+        // Get the session
         HttpSession session = httpRequest.getSession(false);
-        boolean isLoggedIn = session != null && session.getAttribute("user") != null;
-
-        if (!isLoggedIn) {
-            System.out.println("User not logged in, redirecting to login page");
-            // Store the requested URL in session for redirect after login
-            if (!requestPath.contains("login") && !requestPath.contains("register")) {
+        
+        // Check if user is authenticated
+        if (session == null || session.getAttribute("user") == null) {
+            System.out.println("Unauthenticated access attempt: " + requestPath);
+            // Save the requested URL for redirect after login
+            if (!requestPath.contains("/auth/")) {
                 session = httpRequest.getSession(true);
-                session.setAttribute("redirectUrl", requestPath);
+                String queryString = httpRequest.getQueryString();
+                String redirectUrl = requestPath + (queryString != null ? "?" + queryString : "");
+                session.setAttribute("redirectUrl", redirectUrl);
+                System.out.println("Saved redirect URL: " + redirectUrl);
             }
-            httpResponse.sendRedirect(httpRequest.getContextPath() + "/auth/login.jsp");
+            httpResponse.sendRedirect(httpRequest.getContextPath() + "/auth/login");
             return;
         }
 
-        // User is logged in, continue with the filter chain
-        System.out.println("User is logged in, continuing filter chain");
+        // User is authenticated, continue with filter chain
+        System.out.println("Authenticated access: " + requestPath);
         chain.doFilter(request, response);
     }
 
     private boolean isPublicResource(String path) {
-        // Check if the path matches any public path
-        boolean isPublic = PUBLIC_PATHS.stream().anyMatch(path::startsWith) ||
-                          PUBLIC_PATHS.stream().anyMatch(publicPath -> path.endsWith(publicPath));
-
-        System.out.println("Checking path: " + path + " isPublic: " + isPublic);
-
-        return isPublic;
+        return PUBLIC_PATHS.stream().anyMatch(publicPath -> 
+            path.startsWith(publicPath) || path.equals("/"));
     }
 
     @Override
     public void destroy() {
-        // Cleanup if needed
     }
 } 

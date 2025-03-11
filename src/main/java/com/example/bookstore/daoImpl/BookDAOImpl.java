@@ -20,8 +20,14 @@ public class BookDAOImpl implements IBookDAO {
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                Book book = new Book(rs.getInt("id"), rs.getString("title"),
-                        rs.getString("author"), rs.getDouble("price"));
+                Book book = new Book(
+                    rs.getInt("id"),
+                    rs.getString("title"),
+                    rs.getString("author"),
+                    rs.getDouble("price"),
+                    rs.getString("description"),
+                    rs.getInt("stock")
+                );
                 books.add(book);
             }
         } catch (SQLException e) {
@@ -40,8 +46,14 @@ public class BookDAOImpl implements IBookDAO {
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                return new Book(rs.getInt("id"), rs.getString("title"),
-                        rs.getString("author"), rs.getDouble("price"));
+                return new Book(
+                    rs.getInt("id"),
+                    rs.getString("title"),
+                    rs.getString("author"),
+                    rs.getDouble("price"),
+                    rs.getString("description"),
+                    rs.getInt("stock")
+                );
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -51,13 +63,15 @@ public class BookDAOImpl implements IBookDAO {
 
     @Override
     public boolean addBook(Book book) {
-        String sql = "INSERT INTO books (title, author, price) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO books (title, author, price, description, stock) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DbConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, book.getTitle());
             pstmt.setString(2, book.getAuthor());
             pstmt.setDouble(3, book.getPrice());
+            pstmt.setString(4, book.getDescription());
+            pstmt.setInt(5, book.getQuantity());
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -67,14 +81,16 @@ public class BookDAOImpl implements IBookDAO {
 
     @Override
     public boolean updateBook(Book book) {
-        String sql = "UPDATE books SET title = ?, author = ?, price = ? WHERE id = ?";
+        String sql = "UPDATE books SET title = ?, author = ?, price = ?, description = ?, stock = ? WHERE id = ?";
         try (Connection conn = DbConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, book.getTitle());
             pstmt.setString(2, book.getAuthor());
             pstmt.setDouble(3, book.getPrice());
-            pstmt.setInt(4, book.getId());
+            pstmt.setString(4, book.getDescription());
+            pstmt.setInt(5, book.getQuantity());
+            pstmt.setInt(6, book.getId());
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -94,5 +110,33 @@ public class BookDAOImpl implements IBookDAO {
             e.printStackTrace();
         }
         return false;
+    }
+
+    @Override
+    public List<Book> getRecentBooks(int limit) {
+        List<Book> books = new ArrayList<>();
+        String sql = "SELECT * FROM books ORDER BY created_at DESC LIMIT ?";
+
+        try (Connection conn = DbConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, limit);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Book book = new Book(
+                    rs.getInt("id"),
+                    rs.getString("title"),
+                    rs.getString("author"),
+                    rs.getDouble("price"),
+                    rs.getString("description"),
+                    rs.getInt("stock")
+                );
+                books.add(book);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return books;
     }
 }

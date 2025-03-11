@@ -33,4 +33,9 @@ public class BookServiceImpl implements IBookService {
     public boolean deleteBook(int id) {
         return bookDAO.deleteBook(id);
     }
+
+    @Override
+    public List<Book> getRecentBooks(int limit) {
+        return bookDAO.getRecentBooks(limit);
+    }
 }

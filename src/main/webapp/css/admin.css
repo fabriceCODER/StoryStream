@@ -1,0 +1,290 @@
+/* Admin-specific styles */
+:root {
+     --admin-primary: #2c3e50;
+     --admin-secondary: #34495e;
+     --admin-accent: #3498db;
+}
+
+/* Admin Layout */
+.admin-navbar {
+     background-color: #2c3e50;
+     color: white;
+     padding: 1rem 0;
+     position: fixed;
+     top: 0;
+     left: 0;
+     right: 0;
+     z-index: 1000;
+}
+
+.admin-navbar .navbar-brand {
+     color: white;
+     font-size: 1.5rem;
+     font-weight: bold;
+     text-decoration: none;
+}
+
+.admin-navbar .nav-links a {
+     color: white;
+     text-decoration: none;
+     padding: 0.5rem 1rem;
+     margin: 0 0.25rem;
+     border-radius: 4px;
+     transition: background-color 0.3s;
+}
+
+.admin-navbar .nav-links a:hover,
+.admin-navbar .nav-links a.active {
+     background-color: #34495e;
+}
+
+.admin-sidebar {
+     position: fixed;
+     left: 0;
+     top: 60px;
+     bottom: 0;
+     width: 250px;
+     background-color: #34495e;
+     padding: 1rem 0;
+     overflow-y: auto;
+}
+
+.admin-sidebar .nav-links {
+     list-style: none;
+     padding: 0;
+     margin: 0;
+}
+
+.admin-sidebar .nav-links li {
+     padding: 0;
+     margin: 0;
+}
+
+.admin-sidebar .nav-links a {
+     display: block;
+     padding: 0.75rem 1.5rem;
+     color: white;
+     text-decoration: none;
+     transition: background-color 0.3s;
+}
+
+.admin-sidebar .nav-links a:hover,
+.admin-sidebar .nav-links a.active {
+     background-color: #2c3e50;
+}
+
+.admin-content {
+     margin-left: 250px;
+     margin-top: 60px;
+     padding: 2rem;
+     min-height: calc(100vh - 60px);
+     background-color: #f5f6fa;
+}
+
+/* Dashboard Stats */
+.dashboard-stats {
+     display: grid;
+     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+     gap: 1.5rem;
+     margin-bottom: 2rem;
+}
+
+.stat-card {
+     background-color: white;
+     padding: 1.5rem;
+     border-radius: 8px;
+     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+     text-align: center;
+}
+
+.stat-card h3 {
+     font-size: 2rem;
+     margin: 0;
+     color: #2c3e50;
+}
+
+.stat-card p {
+     margin: 0.5rem 0 0;
+     color: #7f8c8d;
+}
+
+/* Tables */
+.admin-table {
+     width: 100%;
+     border-collapse: collapse;
+     background-color: white;
+     border-radius: 8px;
+     overflow: hidden;
+}
+
+.admin-table th,
+.admin-table td {
+     padding: 1rem;
+     text-align: left;
+     border-bottom: 1px solid #eee;
+}
+
+.admin-table th {
+     background-color: #f8f9fa;
+     font-weight: 600;
+     color: #2c3e50;
+}
+
+.admin-table tr:last-child td {
+     border-bottom: none;
+}
+
+/* Forms */
+.admin-form {
+     max-width: 800px;
+     margin: 0 auto;
+     padding: 2rem;
+     background-color: white;
+     border-radius: 8px;
+     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.admin-form .form-group {
+     margin-bottom: 1.5rem;
+}
+
+.admin-form label {
+     display: block;
+     margin-bottom: 0.5rem;
+     color: #2c3e50;
+     font-weight: 500;
+}
+
+.admin-form input[type="text"],
+.admin-form input[type="number"],
+.admin-form textarea {
+     width: 100%;
+     padding: 0.75rem;
+     border: 1px solid #ddd;
+     border-radius: 4px;
+     font-size: 1rem;
+}
+
+.admin-form textarea {
+     min-height: 120px;
+     resize: vertical;
+}
+
+/* Buttons */
+.admin-actions {
+     display: flex;
+     gap: 0.5rem;
+     justify-content: flex-end;
+     margin-top: 1.5rem;
+}
+
+/* Status Badges */
+.order-status {
+     padding: 0.25rem 0.75rem;
+     border-radius: 20px;
+     font-size: 0.875rem;
+     font-weight: 500;
+}
+
+.status-pending {
+     background-color: #ffeeba;
+     color: #856404;
+}
+
+.status-processing {
+     background-color: #b8daff;
+     color: #004085;
+}
+
+.status-completed {
+     background-color: #c3e6cb;
+     color: #155724;
+}
+
+/* Cards */
+.card {
+     background-color: white;
+     border-radius: 8px;
+     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+     margin-bottom: 1.5rem;
+}
+
+.card-header {
+     padding: 1.5rem;
+     border-bottom: 1px solid #eee;
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+}
+
+.card-title {
+     margin: 0;
+     color: #2c3e50;
+     font-size: 1.25rem;
+}
+
+/* Alerts */
+.alert {
+     padding: 1rem;
+     margin-bottom: 1rem;
+     border-radius: 4px;
+}
+
+.alert-success {
+     background-color: #d4edda;
+     color: #155724;
+     border: 1px solid #c3e6cb;
+}
+
+.alert-danger {
+     background-color: #f8d7da;
+     color: #721c24;
+     border: 1px solid #f5c6cb;
+}
+
+/* Book management specific styles */
+.book-grid {
+     display: grid;
+     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+     gap: 20px;
+}
+
+.book-card {
+     background: var(--white);
+     border-radius: 8px;
+     overflow: hidden;
+     box-shadow: var(--shadow);
+     transition: transform 0.3s;
+}
+
+.book-card:hover {
+     transform: translateY(-5px);
+}
+
+.book-card-image {
+     width: 100%;
+     height: 200px;
+     object-fit: cover;
+}
+
+.book-card-content {
+     padding: 20px;
+}
+
+.book-card-title {
+     font-size: 1.2rem;
+     color: var(--admin-primary);
+     margin-bottom: 10px;
+}
+
+.book-card-author {
+     color: var(--dark-gray);
+     font-size: 0.9rem;
+     margin-bottom: 15px;
+}
+
+.book-card-price {
+     font-size: 1.1rem;
+     color: var(--admin-accent);
+     font-weight: bold;
+}
