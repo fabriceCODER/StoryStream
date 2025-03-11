@@ -50,7 +50,7 @@ OnlineBookstore/
 ## Setup & Installation
 1. **Clone the Repository:**
    ```bash
-git clone https://github.com/fabriceCODER/StoryStream.git
+   git clone https://github.com/fabriceCODER/StoryStream.git
    ```
 2. **Set up the Database:**
    - Install PostgreSQL and create a database:
