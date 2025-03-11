@@ -42,22 +42,28 @@
                                         <div class="form-group mb-3">
                                             <label for="email" class="form-label">
                                                 <i class="fas fa-envelope"></i>
-                                                <fmt:message key="register.email" />
+                                                <fmt:message key="register.email.label" />
                                             </label>
-                                            <input type="email" name="email" id="email" class="form-control" required>
+                                            <input type="email" name="email" id="email" class="form-control" required
+                                                placeholder="<fmt:message key=" register.email.placeholder" />">
                                             <div class="invalid-feedback">
                                                 <fmt:message key="register.email.required" />
                                             </div>
+                                            <small class="form-text text-muted">
+                                                <i class="fas fa-info-circle"></i>
+                                                <fmt:message key="register.email.hint" />
+                                            </small>
                                         </div>
 
                                         <div class="form-group mb-3">
                                             <label for="password" class="form-label">
                                                 <i class="fas fa-lock"></i>
-                                                <fmt:message key="register.password" />
+                                                <fmt:message key="register.password.label" />
                                             </label>
                                             <input type="password" name="password" id="password" class="form-control"
                                                 required minlength="8"
-                                                pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$">
+                                                pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$"
+                                                placeholder="<fmt:message key=" register.password.placeholder" />">
                                             <div class="invalid-feedback">
                                                 <fmt:message key="register.password.required" />
                                             </div>
@@ -70,13 +76,18 @@
                                         <div class="form-group mb-3">
                                             <label for="confirmPassword" class="form-label">
                                                 <i class="fas fa-lock"></i>
-                                                <fmt:message key="register.confirmPassword" />
+                                                <fmt:message key="register.confirmPassword.label" />
                                             </label>
                                             <input type="password" name="confirmPassword" id="confirmPassword"
-                                                class="form-control" required>
+                                                class="form-control" required placeholder="<fmt:message key="
+                                                register.confirmPassword.placeholder" />">
                                             <div class="invalid-feedback">
                                                 <fmt:message key="register.confirmPassword.required" />
                                             </div>
+                                            <small class="form-text text-muted">
+                                                <i class="fas fa-info-circle"></i>
+                                                <fmt:message key="register.confirmPassword.hint" />
+                                            </small>
                                         </div>
 
                                         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -137,17 +148,21 @@
                         })
                     })()
 
-                    // Password confirmation validation
+                    // Password confirmation validation with translated message
                     document.getElementById('confirmPassword').addEventListener('input', function () {
                         var password = document.getElementById('password').value;
                         var confirmPassword = this.value;
 
                         if (password !== confirmPassword) {
-                            this.setCustomValidity('Passwords do not match');
+                            this.setCustomValidity(document.querySelector('[data-password-mismatch]').getAttribute('data-message'));
                         } else {
                             this.setCustomValidity('');
                         }
                     });
                 </script>
+
+                <!-- Hidden element for password mismatch message translation -->
+                <div hidden data-password-mismatch data-message="<fmt:message key=" register.password.mismatch" />">
+                </div>
 
                 <%@ include file="/WEB-INF/includes/footer.jsp" %>

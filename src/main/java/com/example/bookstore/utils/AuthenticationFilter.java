@@ -34,7 +34,8 @@ public class AuthenticationFilter implements Filter {
     private static final List<String> PROTECTED_JSP_PATHS = Arrays.asList(
         "/views/",
         "/WEB-INF/",
-        "/admin/"
+        "/admin/",
+        "/user/"
     );
 
     @Override
@@ -98,30 +99,30 @@ public class AuthenticationFilter implements Filter {
 
         // Get user role
         String userRole = (String) session.getAttribute("userRole");
+        System.out.println("User role from session: " + userRole); // Debug log
         
         // Check role-based access
         if (fullPath.startsWith("/admin/")) {
             if (!"admin".equalsIgnoreCase(userRole)) {
-                System.out.println("Access denied to admin path: " + fullPath);
+                System.out.println("Access denied to admin path: " + fullPath + " for role: " + userRole);
                 httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied - Admin Only");
                 return;
             }
         } else if (fullPath.startsWith("/user/")) {
-            if (!"user".equalsIgnoreCase(userRole) && !"admin".equalsIgnoreCase(userRole)) {
-                System.out.println("Access denied to user path: " + fullPath);
+            if (userRole == null || (!userRole.equalsIgnoreCase("user") && !userRole.equalsIgnoreCase("admin"))) {
+                System.out.println("Access denied to user path: " + fullPath + " for role: " + userRole);
                 httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied - User Only");
                 return;
             }
         }
 
         // User is authenticated and authorized, continue with filter chain
-        System.out.println("Authenticated access: " + fullPath + " for role: " + userRole);
+        System.out.println("Authenticated access granted: " + fullPath + " for role: " + userRole);
         chain.doFilter(request, response);
     }
 
     private boolean isPublicResource(String path) {
-        if (path.equals("/")) return true;
-        return PUBLIC_PATHS.stream().anyMatch(publicPath -> 
+        return path.equals("/") || PUBLIC_PATHS.stream().anyMatch(publicPath -> 
             path.startsWith(publicPath));
     }
 
