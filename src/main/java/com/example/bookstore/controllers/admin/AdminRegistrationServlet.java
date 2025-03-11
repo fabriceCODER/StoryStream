@@ -1,6 +1,7 @@
 package com.example.bookstore.controllers.admin;
 
-import com.example.bookstore.dao.UserDAO;
+import com.example.bookstore.dao.IUserDAO;
+import com.example.bookstore.daoImpl.UserDAOImpl;
 import com.example.bookstore.models.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,6 +15,7 @@ public class AdminRegistrationServlet extends BaseAdminController {
     private static final String REGISTER_JSP = "/WEB-INF/views/admin/auth/register.jsp";
     private static final String LOGIN_URL = "/admin/auth/login";
     private static final String ADMIN_CODE = "ADMIN123"; // In production, use secure storage
+    private final IUserDAO userDAO = new UserDAOImpl();
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
@@ -58,8 +60,6 @@ public class AdminRegistrationServlet extends BaseAdminController {
         }
         
         try {
-            UserDAO userDAO = new UserDAO();
-            
             // Check if username exists
             if (userDAO.findByUsername(username) != null) {
                 redirectWithError(response, request.getContextPath(), 
@@ -103,7 +103,7 @@ public class AdminRegistrationServlet extends BaseAdminController {
         User admin = new User();
         admin.setUsername(username);
         admin.setEmail(email);
-        admin.setPassword(password); // In production, use password hashing
+        admin.setPassword(password);
         admin.setRole("admin");
         return admin;
     }

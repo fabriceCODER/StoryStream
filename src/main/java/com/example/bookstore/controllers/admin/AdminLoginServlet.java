@@ -1,6 +1,7 @@
 package com.example.bookstore.controllers.admin;
 
-import com.example.bookstore.dao.UserDAO;
+import com.example.bookstore.dao.IUserDAO;
+import com.example.bookstore.daoImpl.UserDAOImpl;
 import com.example.bookstore.models.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -18,6 +19,7 @@ public class AdminLoginServlet extends BaseAdminController {
     
     private static final String LOGIN_JSP = "/WEB-INF/views/admin/auth/login.jsp";
     private static final String DASHBOARD_URL = "/admin/dashboard";
+    private final IUserDAO userDAO = new UserDAOImpl();
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
@@ -48,7 +50,6 @@ public class AdminLoginServlet extends BaseAdminController {
         }
         
         try {
-            UserDAO userDAO = new UserDAO();
             User user = userDAO.authenticate(username, password);
             
             if (user != null && "admin".equalsIgnoreCase(user.getRole())) {

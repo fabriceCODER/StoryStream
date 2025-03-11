@@ -139,4 +139,14 @@ public class BookDAOImpl implements IBookDAO {
         }
         return books;
     }
+
+    @Override
+    public Object getTotalBooks() {
+        return null;
+    }
+
+    @Override
+    public Object getLowStockBooks() {
+        return null;
+    }
 }

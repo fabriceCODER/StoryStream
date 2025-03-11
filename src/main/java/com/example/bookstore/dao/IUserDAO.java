@@ -7,4 +7,8 @@ public interface IUserDAO {
     boolean registerUser(User user);
     User getUserById(int id);
     User getUserByUsername(String username);
+    User authenticate(String username, String password);
+    User findByUsername(String username);
+    void save(User user);
+    long getTotalUsers();
 }

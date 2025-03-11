@@ -79,4 +79,7 @@ public class User {
                 ", role='" + role + '\'' +
                 '}';
     }
+
+    public void setEmail(String email) {
+    }
 }

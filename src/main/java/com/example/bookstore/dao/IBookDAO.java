@@ -10,4 +10,8 @@ public interface IBookDAO {
     boolean updateBook(Book book);
     boolean deleteBook(int id);
     List<Book> getRecentBooks(int limit);
+
+    Object getTotalBooks();
+
+    Object getLowStockBooks();
 }
