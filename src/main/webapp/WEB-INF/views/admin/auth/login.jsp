@@ -92,7 +92,7 @@
                                                             <i class="fas fa-sign-in-alt"></i>
                                                             <fmt:message key="admin.login.submit" />
                                                        </button>
-                                                       <a href="${pageContext.request.contextPath}/admin/auth/register?lang=${not empty param.lang ? param.lang : 'en'}"
+                                                       <a href="${pageContext.request.contextPath}/admin/auth/register"
                                                             class="btn btn-link">
                                                             <i class="fas fa-user-plus"></i>
                                                             <fmt:message key="admin.login.register" />

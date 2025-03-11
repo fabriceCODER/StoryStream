@@ -14,27 +14,6 @@
         <role-name>user</role-name>
     </security-role>
 
-    <!-- Security Constraints -->
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>Admin Protected Area</web-resource-name>
-            <url-pattern>/admin/*</url-pattern>
-            <url-pattern>/WEB-INF/views/admin/*</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>admin</role-name>
-        </auth-constraint>
-    </security-constraint>
-
-    <!-- Allow access to admin authentication pages -->
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>Admin Auth Pages</web-resource-name>
-            <url-pattern>/admin/auth/*</url-pattern>
-        </web-resource-collection>
-        <!-- No auth-constraint means all users can access -->
-    </security-constraint>
-
     <!-- Error Pages -->
     <error-page>
         <error-code>404</error-code>

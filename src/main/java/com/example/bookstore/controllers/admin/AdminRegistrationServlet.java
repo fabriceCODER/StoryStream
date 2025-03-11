@@ -10,11 +10,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.mindrot.jbcrypt.BCrypt;
 
-@WebServlet("/auth/register")
+@WebServlet("/admin/auth/register")
 public class AdminRegistrationServlet extends BaseAdminController {
 
-    private static final String REGISTER_JSP = "/views/admin/auth/register.jsp";
-    private static final String LOGIN_URL = "/auth/login";
+    private static final String REGISTER_JSP = "/WEB-INF/views/admin/auth/register.jsp";
+    private static final String LOGIN_URL = "/admin/auth/login";
     private static final String ADMIN_CODE = "ADMIN123"; // In production, use secure storage
     private final IUserDAO userDAO = new UserDAOImpl();
 
@@ -92,7 +92,7 @@ public class AdminRegistrationServlet extends BaseAdminController {
 
     private void redirectWithError(HttpServletRequest request, HttpServletResponse response, String errorKey) 
             throws IOException {
-        response.sendRedirect(String.format("%s/auth/register?error=%s&lang=%s",
+        response.sendRedirect(String.format("%s/admin/auth/register?error=%s&lang=%s",
                 request.getContextPath(), errorKey, getLanguage(request)));
     }
 }

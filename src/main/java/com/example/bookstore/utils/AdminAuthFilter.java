@@ -30,24 +30,14 @@ public class AdminAuthFilter implements Filter {
         }
         
         HttpSession session = httpRequest.getSession(false);
-
+        
         // Check if user is authenticated
         if (session == null || session.getAttribute("user") == null) {
-            System.out.println("User not authenticated, redirecting to login");
             httpResponse.sendRedirect(httpRequest.getContextPath() + "/admin/auth/login");
             return;
         }
 
-        // Check if user has admin role
-        String userRole = (String) session.getAttribute("userRole");
-        if (!"admin".equalsIgnoreCase(userRole)) {
-            System.out.println("Access denied: User role is " + userRole);
-            httpResponse.sendRedirect(httpRequest.getContextPath() + "/dashboard?error=Access denied");
-            return;
-        }
-
-        // User is admin, continue with filter chain
-        System.out.println("Admin access granted");
+        // Allow access to admin pages if user exists in session
         chain.doFilter(request, response);
     }
 

@@ -1,25 +1,27 @@
 package com.example.bookstore.models;
 
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 public class Order {
     private int id;
     private int userId;
-    private List<Book> books;
+    private String customerName;
     private double totalAmount;
-    private Date orderDate;
-    private String status; // "PENDING", "SHIPPED", "DELIVERED"
+    private String status;
+    private Timestamp orderDate;
+    private List<OrderItem> orderItems;
 
-    public Order() {}
+    public Order() {
+    }
 
-    public Order(int id, int userId, List<Book> books, double totalAmount, Date orderDate, String status) {
+    public Order(int id, int userId, String customerName, double totalAmount, String status, Timestamp orderDate) {
         this.id = id;
         this.userId = userId;
-        this.books = books;
+        this.customerName = customerName;
         this.totalAmount = totalAmount;
-        this.orderDate = orderDate;
         this.status = status;
+        this.orderDate = orderDate;
     }
 
     public int getId() {
@@ -38,12 +40,12 @@ public class Order {
         this.userId = userId;
     }
 
-    public List<Book> getBooks() {
-        return books;
+    public String getCustomerName() {
+        return customerName;
     }
 
-    public void setBooks(List<Book> books) {
-        this.books = books;
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
     public double getTotalAmount() {
@@ -54,19 +56,27 @@ public class Order {
         this.totalAmount = totalAmount;
     }
 
-    public Date getOrderDate() {
-        return orderDate;
-    }
-
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
-    }
-
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Timestamp getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(Timestamp orderDate) {
+        this.orderDate = orderDate;
+    }
+
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
     }
 }

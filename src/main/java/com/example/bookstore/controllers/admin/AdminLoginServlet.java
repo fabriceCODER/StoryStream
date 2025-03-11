@@ -13,7 +13,7 @@ import java.io.IOException;
 @WebServlet("/admin/auth/login")
 public class AdminLoginServlet extends BaseAdminController {
     
-    private static final String LOGIN_JSP = "/views/admin/auth/login.jsp";
+    private static final String LOGIN_JSP = "/WEB-INF/views/admin/auth/login.jsp";
     private static final String DASHBOARD_URL = "/admin/dashboard";
     private final IUserDAO userDAO = new UserDAOImpl();
     
