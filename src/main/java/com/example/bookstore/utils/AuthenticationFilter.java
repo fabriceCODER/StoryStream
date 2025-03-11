@@ -22,7 +22,9 @@ public class AuthenticationFilter implements Filter {
         "/css/",
         "/js/",
         "/images/",
+        "/assets/",
         "/error.jsp",
+        "/home.jsp",
         "/"
     );
 
@@ -43,20 +45,24 @@ public class AuthenticationFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         
         String requestPath = httpRequest.getServletPath();
+        String pathInfo = httpRequest.getPathInfo();
+        
+        // Combine servlet path and path info for complete path
+        String fullPath = pathInfo != null ? requestPath + pathInfo : requestPath;
         
         // Debug logging
-        System.out.println("Processing request: " + requestPath);
+        System.out.println("Processing request: " + fullPath);
 
         // Block direct access to JSP files in protected directories
-        if (requestPath.endsWith(".jsp") && isProtectedJspPath(requestPath)) {
-            System.out.println("Blocked direct JSP access: " + requestPath);
+        if (requestPath.endsWith(".jsp") && isProtectedJspPath(fullPath)) {
+            System.out.println("Blocked direct JSP access: " + fullPath);
             httpResponse.sendRedirect(httpRequest.getContextPath() + "/");
             return;
         }
         
         // Check if it's a public resource
-        if (isPublicResource(requestPath)) {
-            System.out.println("Public resource accessed: " + requestPath);
+        if (isPublicResource(fullPath)) {
+            System.out.println("Public resource accessed: " + fullPath);
             chain.doFilter(request, response);
             return;
         }
@@ -66,12 +72,12 @@ public class AuthenticationFilter implements Filter {
         
         // Check if user is authenticated
         if (session == null || session.getAttribute("user") == null) {
-            System.out.println("Unauthenticated access attempt: " + requestPath);
+            System.out.println("Unauthenticated access attempt: " + fullPath);
             // Save the requested URL for redirect after login
-            if (!requestPath.contains("/auth/")) {
+            if (!fullPath.contains("/auth/")) {
                 session = httpRequest.getSession(true);
                 String queryString = httpRequest.getQueryString();
-                String redirectUrl = requestPath + (queryString != null ? "?" + queryString : "");
+                String redirectUrl = fullPath + (queryString != null ? "?" + queryString : "");
                 session.setAttribute("redirectUrl", redirectUrl);
                 System.out.println("Saved redirect URL: " + redirectUrl);
             }
@@ -80,13 +86,14 @@ public class AuthenticationFilter implements Filter {
         }
 
         // User is authenticated, continue with filter chain
-        System.out.println("Authenticated access: " + requestPath);
+        System.out.println("Authenticated access: " + fullPath);
         chain.doFilter(request, response);
     }
 
     private boolean isPublicResource(String path) {
+        if (path.equals("/")) return true;
         return PUBLIC_PATHS.stream().anyMatch(publicPath -> 
-            path.startsWith(publicPath) || path.equals("/"));
+            path.startsWith(publicPath));
     }
 
     private boolean isProtectedJspPath(String path) {

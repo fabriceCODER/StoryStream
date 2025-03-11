@@ -25,16 +25,6 @@
         </auth-constraint>
     </security-constraint>
 
-    <!-- Servlet Mappings -->
-    <servlet>
-        <servlet-name>ViewDispatcherServlet</servlet-name>
-        <servlet-class>com.example.bookstore.utils.ViewDispatcherServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>ViewDispatcherServlet</servlet-name>
-        <url-pattern>/</url-pattern>
-    </servlet-mapping>
-
     <!-- Error Pages -->
     <error-page>
         <error-code>404</error-code>
