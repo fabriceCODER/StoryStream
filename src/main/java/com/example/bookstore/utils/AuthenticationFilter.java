@@ -15,6 +15,9 @@ public class AuthenticationFilter implements Filter {
     private static final List<String> PUBLIC_PATHS = Arrays.asList(
         "/auth/login",
         "/auth/register",
+        "/auth/process-login",
+        "/auth/process-register",
+        "/auth/logout",
         "/auth/login.jsp",
         "/auth/register.jsp",
         "/register",
@@ -46,17 +49,25 @@ public class AuthenticationFilter implements Filter {
         
         String requestPath = httpRequest.getServletPath();
         String pathInfo = httpRequest.getPathInfo();
+        String contextPath = httpRequest.getContextPath();
         
         // Combine servlet path and path info for complete path
         String fullPath = pathInfo != null ? requestPath + pathInfo : requestPath;
         
         // Debug logging
         System.out.println("Processing request: " + fullPath);
+        System.out.println("Context path: " + contextPath);
+
+        // Allow access to static resources
+        if (isStaticResource(fullPath)) {
+            chain.doFilter(request, response);
+            return;
+        }
 
         // Block direct access to JSP files in protected directories
         if (requestPath.endsWith(".jsp") && isProtectedJspPath(fullPath)) {
             System.out.println("Blocked direct JSP access: " + fullPath);
-            httpResponse.sendRedirect(httpRequest.getContextPath() + "/");
+            httpResponse.sendRedirect(contextPath + "/");
             return;
         }
         
@@ -74,19 +85,37 @@ public class AuthenticationFilter implements Filter {
         if (session == null || session.getAttribute("user") == null) {
             System.out.println("Unauthenticated access attempt: " + fullPath);
             // Save the requested URL for redirect after login
-            if (!fullPath.contains("/auth/")) {
+            if (!fullPath.startsWith("/auth/")) {
                 session = httpRequest.getSession(true);
                 String queryString = httpRequest.getQueryString();
                 String redirectUrl = fullPath + (queryString != null ? "?" + queryString : "");
                 session.setAttribute("redirectUrl", redirectUrl);
                 System.out.println("Saved redirect URL: " + redirectUrl);
             }
-            httpResponse.sendRedirect(httpRequest.getContextPath() + "/auth/login");
+            httpResponse.sendRedirect(contextPath + "/auth/login");
             return;
         }
 
-        // User is authenticated, continue with filter chain
-        System.out.println("Authenticated access: " + fullPath);
+        // Get user role
+        String userRole = (String) session.getAttribute("userRole");
+        
+        // Check role-based access
+        if (fullPath.startsWith("/admin/")) {
+            if (!"admin".equalsIgnoreCase(userRole)) {
+                System.out.println("Access denied to admin path: " + fullPath);
+                httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied - Admin Only");
+                return;
+            }
+        } else if (fullPath.startsWith("/user/")) {
+            if (!"user".equalsIgnoreCase(userRole) && !"admin".equalsIgnoreCase(userRole)) {
+                System.out.println("Access denied to user path: " + fullPath);
+                httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied - User Only");
+                return;
+            }
+        }
+
+        // User is authenticated and authorized, continue with filter chain
+        System.out.println("Authenticated access: " + fullPath + " for role: " + userRole);
         chain.doFilter(request, response);
     }
 
@@ -99,6 +128,13 @@ public class AuthenticationFilter implements Filter {
     private boolean isProtectedJspPath(String path) {
         return PROTECTED_JSP_PATHS.stream().anyMatch(protectedPath -> 
             path.startsWith(protectedPath));
+    }
+
+    private boolean isStaticResource(String path) {
+        return path.startsWith("/css/") || 
+               path.startsWith("/js/") || 
+               path.startsWith("/images/") || 
+               path.startsWith("/assets/");
     }
 
     @Override
