@@ -26,6 +26,12 @@ public class AuthenticationFilter implements Filter {
         "/"
     );
 
+    private static final List<String> PROTECTED_JSP_PATHS = Arrays.asList(
+        "/views/",
+        "/WEB-INF/",
+        "/admin/"
+    );
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
     }
@@ -40,6 +46,13 @@ public class AuthenticationFilter implements Filter {
         
         // Debug logging
         System.out.println("Processing request: " + requestPath);
+
+        // Block direct access to JSP files in protected directories
+        if (requestPath.endsWith(".jsp") && isProtectedJspPath(requestPath)) {
+            System.out.println("Blocked direct JSP access: " + requestPath);
+            httpResponse.sendRedirect(httpRequest.getContextPath() + "/");
+            return;
+        }
         
         // Check if it's a public resource
         if (isPublicResource(requestPath)) {
@@ -74,6 +87,11 @@ public class AuthenticationFilter implements Filter {
     private boolean isPublicResource(String path) {
         return PUBLIC_PATHS.stream().anyMatch(publicPath -> 
             path.startsWith(publicPath) || path.equals("/"));
+    }
+
+    private boolean isProtectedJspPath(String path) {
+        return PROTECTED_JSP_PATHS.stream().anyMatch(protectedPath -> 
+            path.startsWith(protectedPath));
     }
 
     @Override
