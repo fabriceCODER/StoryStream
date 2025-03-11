@@ -38,6 +38,14 @@ public class AuthenticationFilter implements Filter {
         "/user/"
     );
 
+    private static final List<String> USER_PATHS = Arrays.asList(
+        "/dashboard",
+        "/user/dashboard",
+        "/profile",
+        "/cart",
+        "/orders"
+    );
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
     }
@@ -108,7 +116,7 @@ public class AuthenticationFilter implements Filter {
                 httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied - Admin Only");
                 return;
             }
-        } else if (fullPath.startsWith("/user/")) {
+        } else if (isUserPath(fullPath)) {
             if (userRole == null || (!userRole.equalsIgnoreCase("user") && !userRole.equalsIgnoreCase("admin"))) {
                 System.out.println("Access denied to user path: " + fullPath + " for role: " + userRole);
                 httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied - User Only");
@@ -136,6 +144,11 @@ public class AuthenticationFilter implements Filter {
                path.startsWith("/js/") || 
                path.startsWith("/images/") || 
                path.startsWith("/assets/");
+    }
+
+    private boolean isUserPath(String path) {
+        return USER_PATHS.stream().anyMatch(userPath -> 
+            path.equals(userPath) || path.startsWith("/user/"));
     }
 
     @Override

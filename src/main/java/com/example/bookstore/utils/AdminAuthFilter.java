@@ -26,7 +26,7 @@ public class AdminAuthFilter implements Filter {
         // Check if user is authenticated
         if (session == null || session.getAttribute("user") == null) {
             System.out.println("User not authenticated, redirecting to login");
-            httpResponse.sendRedirect(httpRequest.getContextPath() + "/auth/login");
+            httpResponse.sendRedirect(httpRequest.getContextPath() + "/admin/auth/login");
             return;
         }
 
