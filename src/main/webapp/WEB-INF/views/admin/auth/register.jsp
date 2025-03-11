@@ -18,28 +18,53 @@
                                                   <fmt:message key="admin.register.title" />
                                              </h2>
 
+                                             <!-- Language Selection -->
+                                             <div class="text-center mb-4">
+                                                  <div class="btn-group">
+                                                       <a href="?lang=en${not empty param.error ? '&error='.concat(param.error) : ''}"
+                                                            class="btn btn-outline-secondary ${param.lang == 'en' || empty param.lang ? 'active' : ''}">
+                                                            <i class="fas fa-flag"></i> English
+                                                       </a>
+                                                       <a href="?lang=rw${not empty param.error ? '&error='.concat(param.error) : ''}"
+                                                            class="btn btn-outline-secondary ${param.lang == 'rw' ? 'active' : ''}">
+                                                            <i class="fas fa-flag"></i> Kinyarwanda
+                                                       </a>
+                                                       <a href="?lang=sw${not empty param.error ? '&error='.concat(param.error) : ''}"
+                                                            class="btn btn-outline-secondary ${param.lang == 'sw' ? 'active' : ''}">
+                                                            <i class="fas fa-flag"></i> Kiswahili
+                                                       </a>
+                                                  </div>
+                                             </div>
+
+                                             <!-- Show error message if present -->
+                                             <c:if test="${not empty param.error}">
+                                                  <div class="alert alert-danger">
+                                                       <i class="fas fa-exclamation-circle"></i>
+                                                       <fmt:message key="${param.error}" />
+                                                  </div>
+                                             </c:if>
+
                                              <!-- Registration Form -->
-                                             <form action="${pageContext.request.contextPath}/admin/register"
+                                             <form action="${pageContext.request.contextPath}/admin/auth/register"
                                                   method="post" class="needs-validation" novalidate>
                                                   <input type="hidden" name="lang"
                                                        value="${not empty param.lang ? param.lang : 'en'}">
 
+                                                  <!-- Username -->
                                                   <div class="form-group mb-3">
                                                        <label for="username" class="form-label">
                                                             <i class="fas fa-user"></i>
-                                                            <fmt:message key="admin.register.username" />
+                                                            <fmt:message key="admin.register.username.label" />
                                                        </label>
                                                        <input type="text" name="username" id="username"
-                                                            class="form-control" required pattern="[a-zA-Z0-9_]{3,20}">
+                                                            class="form-control" required
+                                                            placeholder="<fmt:message key='admin.register.username.placeholder' />">
                                                        <div class="invalid-feedback">
                                                             <fmt:message key="admin.register.username.required" />
                                                        </div>
-                                                       <small class="form-text text-muted">
-                                                            <i class="fas fa-info-circle"></i>
-                                                            <fmt:message key="admin.register.username.hint" />
-                                                       </small>
                                                   </div>
 
+                                                  <!-- Email -->
                                                   <div class="form-group mb-3">
                                                        <label for="email" class="form-label">
                                                             <i class="fas fa-envelope"></i>
@@ -51,30 +76,23 @@
                                                        <div class="invalid-feedback">
                                                             <fmt:message key="admin.register.email.required" />
                                                        </div>
-                                                       <small class="form-text text-muted">
-                                                            <i class="fas fa-info-circle"></i>
-                                                            <fmt:message key="admin.register.email.hint" />
-                                                       </small>
                                                   </div>
 
+                                                  <!-- Password -->
                                                   <div class="form-group mb-3">
                                                        <label for="password" class="form-label">
                                                             <i class="fas fa-lock"></i>
                                                             <fmt:message key="admin.register.password.label" />
                                                        </label>
                                                        <input type="password" name="password" id="password"
-                                                            class="form-control" required minlength="8"
-                                                            pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$"
+                                                            class="form-control" required
                                                             placeholder="<fmt:message key='admin.register.password.placeholder' />">
                                                        <div class="invalid-feedback">
                                                             <fmt:message key="admin.register.password.required" />
                                                        </div>
-                                                       <small class="form-text text-muted">
-                                                            <i class="fas fa-info-circle"></i>
-                                                            <fmt:message key="admin.register.password.hint" />
-                                                       </small>
                                                   </div>
 
+                                                  <!-- Confirm Password -->
                                                   <div class="form-group mb-3">
                                                        <label for="confirmPassword" class="form-label">
                                                             <i class="fas fa-lock"></i>
@@ -87,10 +105,6 @@
                                                             <fmt:message
                                                                  key="admin.register.confirmPassword.required" />
                                                        </div>
-                                                       <small class="form-text text-muted">
-                                                            <i class="fas fa-info-circle"></i>
-                                                            <fmt:message key="admin.register.confirmPassword.hint" />
-                                                       </small>
                                                   </div>
 
                                                   <!-- Admin Code -->
@@ -111,77 +125,29 @@
                                                        </small>
                                                   </div>
 
-                                                  <div class="d-flex justify-content-between align-items-center mb-3">
+                                                  <!-- Submit Button -->
+                                                  <div class="d-grid gap-2">
                                                        <button type="submit" class="btn btn-primary">
                                                             <i class="fas fa-user-plus"></i>
                                                             <fmt:message key="admin.register.submit" />
                                                        </button>
-                                                       <a href="${pageContext.request.contextPath}/admin/login?lang=${not empty param.lang ? param.lang : 'en'}"
-                                                            class="btn btn-link">
-                                                            <i class="fas fa-sign-in-alt"></i>
-                                                            <fmt:message key="admin.register.login" />
-                                                       </a>
                                                   </div>
                                              </form>
 
-                                             <!-- Language Selector -->
+                                             <!-- Login Link -->
                                              <div class="text-center mt-3">
-                                                  <div class="btn-group">
-                                                       <a href="?lang=en"
-                                                            class="btn btn-outline-secondary ${param.lang == 'en' || empty param.lang ? 'active' : ''}">English</a>
-                                                       <a href="?lang=rw"
-                                                            class="btn btn-outline-secondary ${param.lang == 'rw' ? 'active' : ''}">Kinyarwanda</a>
-                                                       <a href="?lang=sw"
-                                                            class="btn btn-outline-secondary ${param.lang == 'sw' ? 'active' : ''}">Kiswahili</a>
-                                                  </div>
+                                                  <p>
+                                                       <fmt:message key="admin.register.login.prompt" />
+                                                       <a
+                                                            href="${pageContext.request.contextPath}/admin/auth/login?lang=${not empty param.lang ? param.lang : 'en'}">
+                                                            <fmt:message key="admin.register.login.link" />
+                                                       </a>
+                                                  </p>
                                              </div>
-
-                                             <!-- Messages -->
-                                             <c:if test="${not empty param.error}">
-                                                  <div class="alert alert-danger mt-3" role="alert">
-                                                       <i class="fas fa-exclamation-circle"></i> ${param.error}
-                                                  </div>
-                                             </c:if>
-                                             <c:if test="${not empty param.message}">
-                                                  <div class="alert alert-success mt-3" role="alert">
-                                                       <i class="fas fa-check-circle"></i> ${param.message}
-                                                  </div>
-                                             </c:if>
                                         </div>
                                    </div>
                               </div>
                          </div>
                     </div>
 
-                    <script>
-                         // Form validation
-                         (function () {
-                              'use strict'
-                              var forms = document.querySelectorAll('.needs-validation')
-                              Array.prototype.slice.call(forms).forEach(function (form) {
-                                   form.addEventListener('submit', function (event) {
-                                        if (!form.checkValidity()) {
-                                             event.preventDefault()
-                                             event.stopPropagation()
-                                        }
-                                        form.classList.add('was-validated')
-                                   }, false)
-                              })
-                         })()
-
-                         // Password confirmation validation
-                         document.getElementById('confirmPassword').addEventListener('input', function () {
-                              var password = document.getElementById('password').value;
-                              var confirmPassword = this.value;
-
-                              if (password !== confirmPassword) {
-                                   this.setCustomValidity(document.querySelector('[data-password-mismatch]').getAttribute('data-message'));
-                              } else {
-                                   this.setCustomValidity('');
-                              }
-                         });
-                    </script>
-
-                    <!-- Hidden element for password mismatch message translation -->
-                    <div hidden data-password-mismatch
-                         data-message="<fmt:message key='admin.register.password.mismatch' />"></div>
+                    <%@ include file="/WEB-INF/includes/footer.jsp" %>

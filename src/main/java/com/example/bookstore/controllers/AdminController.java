@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.util.List;
 
 @WebServlet(urlPatterns = {
-    "/admin/dashboard",
     "/admin/books",
     "/admin/orders",
     "/admin/users",
@@ -40,12 +39,6 @@ public class AdminController extends HttpServlet {
             // Set any messages or errors
             if (message != null) request.setAttribute("message", message);
             if (error != null) request.setAttribute("error", error);
-
-            // Handle dashboard
-            if (servletPath.equals("/admin/dashboard")) {
-                showDashboard(request, response);
-                return;
-            }
 
             // Handle books section
             if (servletPath.equals("/admin/books")) {
@@ -104,19 +97,6 @@ public class AdminController extends HttpServlet {
             System.err.println("Error in AdminController.doPost: " + e.getMessage());
             e.printStackTrace();
             response.sendRedirect(request.getContextPath() + "/admin/books?error=An error occurred while processing your request");
-        }
-    }
-
-    private void showDashboard(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            List<Book> recentBooks = bookService.getRecentBooks(5);
-            request.setAttribute("recentBooks", recentBooks);
-            request.getRequestDispatcher("/views/admin/admin_dashboard.jsp").forward(request, response);
-        } catch (Exception e) {
-            System.err.println("Error showing dashboard: " + e.getMessage());
-            e.printStackTrace();
-            request.setAttribute("error", "Error loading dashboard data");
-            request.getRequestDispatcher("/views/admin/admin_dashboard.jsp").forward(request, response);
         }
     }
 

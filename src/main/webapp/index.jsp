@@ -51,15 +51,45 @@
                         <ul class="navbar-nav ms-auto">
                             <c:choose>
                                 <c:when test="${empty sessionScope.user}">
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="${pageContext.request.contextPath}/auth/login">
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" id="loginDropdown" role="button"
+                                            data-bs-toggle="dropdown">
                                             <i class="fas fa-sign-in-alt me-1"></i>Login
                                         </a>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item"
+                                                    href="${pageContext.request.contextPath}/auth/login">
+                                                    <i class="fas fa-user me-1"></i>User Login
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item"
+                                                    href="${pageContext.request.contextPath}/admin/auth/login">
+                                                    <i class="fas fa-user-shield me-1"></i>Admin Login
+                                                </a>
+                                            </li>
+                                        </ul>
                                     </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="${pageContext.request.contextPath}/auth/register">
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" id="registerDropdown" role="button"
+                                            data-bs-toggle="dropdown">
                                             <i class="fas fa-user-plus me-1"></i>Register
                                         </a>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item"
+                                                    href="${pageContext.request.contextPath}/auth/register">
+                                                    <i class="fas fa-user me-1"></i>User Register
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item"
+                                                    href="${pageContext.request.contextPath}/admin/auth/register">
+                                                    <i class="fas fa-user-shield me-1"></i>Admin Register
+                                                </a>
+                                            </li>
+                                        </ul>
                                     </li>
                                 </c:when>
                                 <c:otherwise>
@@ -83,14 +113,26 @@
                     <c:choose>
                         <c:when test="${empty sessionScope.user}">
                             <div class="d-grid gap-2 d-md-block">
-                                <a href="${pageContext.request.contextPath}/auth/login"
-                                    class="btn btn-light btn-lg me-2">
-                                    <i class="fas fa-sign-in-alt me-2"></i>Login
-                                </a>
-                                <a href="${pageContext.request.contextPath}/auth/register"
-                                    class="btn btn-outline-light btn-lg">
-                                    <i class="fas fa-user-plus me-2"></i>Register
-                                </a>
+                                <div class="mb-3">
+                                    <a href="${pageContext.request.contextPath}/auth/login"
+                                        class="btn btn-light btn-lg me-2">
+                                        <i class="fas fa-user me-2"></i>User Login
+                                    </a>
+                                    <a href="${pageContext.request.contextPath}/auth/register"
+                                        class="btn btn-outline-light btn-lg">
+                                        <i class="fas fa-user-plus me-2"></i>User Register
+                                    </a>
+                                </div>
+                                <div>
+                                    <a href="${pageContext.request.contextPath}/admin/auth/login"
+                                        class="btn btn-light btn-lg me-2">
+                                        <i class="fas fa-user-shield me-2"></i>Admin Login
+                                    </a>
+                                    <a href="${pageContext.request.contextPath}/admin/auth/register"
+                                        class="btn btn-outline-light btn-lg">
+                                        <i class="fas fa-user-shield me-2"></i>Admin Register
+                                    </a>
+                                </div>
                             </div>
                         </c:when>
                         <c:otherwise>
