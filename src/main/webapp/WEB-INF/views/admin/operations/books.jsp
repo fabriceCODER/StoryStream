@@ -109,56 +109,53 @@
                                    <!-- Books Table -->
                                    <div class="card">
                                         <div class="card-body">
-                                             <table id="booksTable" class="table table-striped table-hover">
-                                                  <thead>
-                                                       <tr>
-                                                            <th>ID</th>
-                                                            <th>Title</th>
-                                                            <th>Author</th>
-                                                            <th>Category</th>
-                                                            <th>Price</th>
-                                                            <th>Stock</th>
-                                                            <th>Status</th>
-                                                            <th>Actions</th>
-                                                       </tr>
-                                                  </thead>
-                                                  <tbody>
-                                                       <c:forEach items="${books}" var="book">
+                                             <div class="table-responsive">
+                                                  <table id="booksTable" class="table table-striped table-hover">
+                                                       <thead>
                                                             <tr>
-                                                                 <td>${book.id}</td>
-                                                                 <td>${book.title}</td>
-                                                                 <td>${book.author}</td>
-                                                                 <td>${book.category}</td>
-                                                                 <td>$${book.price}</td>
-                                                                 <td>${book.stock}</td>
-                                                                 <td>
-                                                                      <span
-                                                                           class="badge bg-${book.stock > 0 ? 'success' : 'danger'}">
-                                                                           ${book.stock > 0 ? 'In Stock' : 'Out of
-                                                                           Stock'}
-                                                                      </span>
-                                                                 </td>
-                                                                 <td>
-                                                                      <div class="btn-group">
-                                                                           <a href="${pageContext.request.contextPath}/admin/operations/books/edit?id=${book.id}"
-                                                                                class="btn btn-sm btn-primary">
-                                                                                <i class="fas fa-edit"></i>
-                                                                           </a>
-                                                                           <a href="${pageContext.request.contextPath}/admin/operations/books/view?id=${book.id}"
-                                                                                class="btn btn-sm btn-info">
-                                                                                <i class="fas fa-eye"></i>
-                                                                           </a>
-                                                                           <button type="button"
-                                                                                class="btn btn-sm btn-danger"
-                                                                                onclick="deleteBook(${book.id}, '${book.title}')">
-                                                                                <i class="fas fa-trash"></i>
-                                                                           </button>
-                                                                      </div>
-                                                                 </td>
+                                                                 <th>ID</th>
+                                                                 <th>Image</th>
+                                                                 <th>Title</th>
+                                                                 <th>Author</th>
+                                                                 <th>Price</th>
+                                                                 <th>Stock</th>
+                                                                 <th>Actions</th>
                                                             </tr>
-                                                       </c:forEach>
-                                                  </tbody>
-                                             </table>
+                                                       </thead>
+                                                       <tbody>
+                                                            <c:forEach items="${books}" var="book">
+                                                                 <tr>
+                                                                      <td>${book.id}</td>
+                                                                      <td>
+                                                                           <c:if test="${not empty book.imageUrl}">
+                                                                                <img src="${book.imageUrl}"
+                                                                                     alt="${book.title}"
+                                                                                     class="img-thumbnail"
+                                                                                     style="max-height: 50px;">
+                                                                           </c:if>
+                                                                      </td>
+                                                                      <td>${book.title}</td>
+                                                                      <td>${book.author}</td>
+                                                                      <td>$${book.price}</td>
+                                                                      <td>${book.quantity}</td>
+                                                                      <td>
+                                                                           <div class="btn-group" role="group">
+                                                                                <a href="${pageContext.request.contextPath}/admin/operations/books/edit?id=${book.id}"
+                                                                                     class="btn btn-sm btn-primary">
+                                                                                     <i class="fas fa-edit"></i>
+                                                                                </a>
+                                                                                <button type="button"
+                                                                                     class="btn btn-sm btn-danger"
+                                                                                     onclick="confirmDelete(${book.id})">
+                                                                                     <i class="fas fa-trash"></i>
+                                                                                </button>
+                                                                           </div>
+                                                                      </td>
+                                                                 </tr>
+                                                            </c:forEach>
+                                                       </tbody>
+                                                  </table>
+                                             </div>
                                         </div>
                                    </div>
                               </main>
@@ -174,14 +171,13 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                    </div>
                                    <div class="modal-body">
-                                        <p>Are you sure you want to delete the book: <span id="bookTitle"></span>?</p>
+                                        Are you sure you want to delete this book?
                                    </div>
                                    <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary"
                                              data-bs-dismiss="modal">Cancel</button>
-                                        <form id="deleteForm" method="POST" style="display: inline;">
-                                             <button type="submit" class="btn btn-danger">Delete</button>
-                                        </form>
+                                        <button type="button" class="btn btn-danger"
+                                             onclick="deleteBook()">Delete</button>
                                    </div>
                               </div>
                          </div>
@@ -194,22 +190,37 @@
                     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
 
                     <script>
+                         let bookIdToDelete = null;
+                         const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+
+                         function confirmDelete(id) {
+                              bookIdToDelete = id;
+                              deleteModal.show();
+                         }
+
+                         function deleteBook() {
+                              if (bookIdToDelete) {
+                                   window.location.href = '${pageContext.request.contextPath}/admin/operations/books/delete?id=' + bookIdToDelete;
+                              }
+                         }
+
                          $(document).ready(function () {
                               $('#booksTable').DataTable({
-                                   "order": [[0, "desc"]],
-                                   "language": {
-                                        "search": "Search books:",
-                                        "lengthMenu": "Show _MENU_ books per page",
-                                        "info": "Showing _START_ to _END_ of _TOTAL_ books"
+                                   order: [[0, 'desc']], // Sort by ID in descending order
+                                   pageLength: 10,
+                                   language: {
+                                        search: "Search books:",
+                                        lengthMenu: "Show _MENU_ books per page",
+                                        info: "Showing _START_ to _END_ of _TOTAL_ books",
+                                        paginate: {
+                                             first: "First",
+                                             last: "Last",
+                                             next: "Next",
+                                             previous: "Previous"
+                                        }
                                    }
                               });
                          });
-
-                         function deleteBook(id, title) {
-                              document.getElementById('bookTitle').textContent = title;
-                              document.getElementById('deleteForm').action = '${pageContext.request.contextPath}/admin/operations/books/delete?id=' + id;
-                              new bootstrap.Modal(document.getElementById('deleteModal')).show();
-                         }
                     </script>
                </body>
 

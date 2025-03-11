@@ -9,5 +9,6 @@ public interface ICategoryDAO {
     void addCategory(Category category);
     void updateCategory(Category category);
     void deleteCategory(int id);
+
     int getTotalCategories();
-} 
+}

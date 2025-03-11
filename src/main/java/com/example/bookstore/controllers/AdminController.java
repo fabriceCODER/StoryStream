@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 @WebServlet(urlPatterns = {
@@ -25,7 +26,11 @@ public class AdminController extends HttpServlet {
 
     @Override
     public void init() {
-        bookService = new BookServiceImpl();
+        try {
+            bookService = new BookServiceImpl();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -66,7 +71,7 @@ public class AdminController extends HttpServlet {
             System.err.println("Error in AdminController.doGet: " + e.getMessage());
             e.printStackTrace();
             request.setAttribute("error", "An error occurred while processing your request");
-            request.getRequestDispatcher("/error.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/error.jsp").forward(request, response);
         }
     }
 
@@ -104,17 +109,17 @@ public class AdminController extends HttpServlet {
         try {
             List<Book> books = bookService.getAllBooks();
             request.setAttribute("books", books);
-            request.getRequestDispatcher("/views/admin/manage_books.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/admin/operations/books.jsp").forward(request, response);
         } catch (Exception e) {
             System.err.println("Error managing books: " + e.getMessage());
             e.printStackTrace();
             request.setAttribute("error", "Error loading books data");
-            request.getRequestDispatcher("/views/admin/manage_books.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/admin/operations/books.jsp").forward(request, response);
         }
     }
 
     private void showAddBookForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("/views/admin/add_book.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/admin/operations/book-form.jsp").forward(request, response);
     }
 
     private void showEditBookForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -126,7 +131,7 @@ public class AdminController extends HttpServlet {
                 return;
             }
             request.setAttribute("book", book);
-            request.getRequestDispatcher("/views/admin/edit_book.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/admin/operations/book-form.jsp").forward(request, response);
         } catch (NumberFormatException e) {
             response.sendRedirect(request.getContextPath() + "/admin/books?error=Invalid book ID");
         }
@@ -141,7 +146,7 @@ public class AdminController extends HttpServlet {
                 return;
             }
             request.setAttribute("book", book);
-            request.getRequestDispatcher("/views/admin/deleteBook.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/admin/operations/delete-book.jsp").forward(request, response);
         } catch (NumberFormatException e) {
             response.sendRedirect(request.getContextPath() + "/admin/books?error=Invalid book ID");
         }
@@ -218,6 +223,6 @@ public class AdminController extends HttpServlet {
     }
 
     private void manageOrders(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("/views/admin/manage_orders.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/admin/operations/orders.jsp").forward(request, response);
     }
 }

@@ -2,7 +2,7 @@ package com.example.bookstore.daoImpl;
 
 import com.example.bookstore.dao.ICategoryDAO;
 import com.example.bookstore.models.Category;
-import com.example.bookstore.utils.DBConnection;
+import com.example.bookstore.utils.DbConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -11,18 +11,18 @@ import java.util.List;
 public class CategoryDAOImpl implements ICategoryDAO {
     private final Connection connection;
 
-    public CategoryDAOImpl() {
-        this.connection = DBConnection.getConnection();
+    public CategoryDAOImpl() throws SQLException {
+        connection = DbConnection.getConnection();
     }
 
     @Override
     public List<Category> getAllCategories() {
         List<Category> categories = new ArrayList<>();
-        String query = "SELECT * FROM categories";
-
-        try (PreparedStatement stmt = connection.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
-
+        String sql = "SELECT id, name, description FROM categories ORDER BY name";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            
             while (rs.next()) {
                 Category category = new Category();
                 category.setId(rs.getInt("id"));
@@ -33,39 +33,45 @@ public class CategoryDAOImpl implements ICategoryDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        
         return categories;
     }
 
     @Override
     public Category getCategoryById(int id) {
-        String query = "SELECT * FROM categories WHERE id = ?";
+        String sql = "SELECT id, name, description FROM categories WHERE id = ?";
         
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
             
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    Category category = new Category();
-                    category.setId(rs.getInt("id"));
-                    category.setName(rs.getString("name"));
-                    category.setDescription(rs.getString("description"));
-                    return category;
-                }
+            if (rs.next()) {
+                Category category = new Category();
+                category.setId(rs.getInt("id"));
+                category.setName(rs.getString("name"));
+                category.setDescription(rs.getString("description"));
+                return category;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        
         return null;
     }
 
     @Override
     public void addCategory(Category category) {
-        String query = "INSERT INTO categories (name, description) VALUES (?, ?)";
+        String sql = "INSERT INTO categories (name, description) VALUES (?, ?)";
         
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, category.getName());
             stmt.setString(2, category.getDescription());
             stmt.executeUpdate();
+            
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                category.setId(rs.getInt(1));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -73,9 +79,9 @@ public class CategoryDAOImpl implements ICategoryDAO {
 
     @Override
     public void updateCategory(Category category) {
-        String query = "UPDATE categories SET name = ?, description = ? WHERE id = ?";
+        String sql = "UPDATE categories SET name = ?, description = ? WHERE id = ?";
         
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, category.getName());
             stmt.setString(2, category.getDescription());
             stmt.setInt(3, category.getId());
@@ -87,9 +93,9 @@ public class CategoryDAOImpl implements ICategoryDAO {
 
     @Override
     public void deleteCategory(int id) {
-        String query = "DELETE FROM categories WHERE id = ?";
+        String sql = "DELETE FROM categories WHERE id = ?";
         
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {

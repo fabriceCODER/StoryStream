@@ -4,10 +4,15 @@ import com.example.bookstore.dao.IBookDAO;
 import com.example.bookstore.daoImpl.BookDAOImpl;
 import com.example.bookstore.models.Book;
 import com.example.bookstore.services.IBookService;
+
+import java.sql.SQLException;
 import java.util.List;
 
 public class BookServiceImpl implements IBookService {
     private final IBookDAO bookDAO = new BookDAOImpl();
+
+    public BookServiceImpl() throws SQLException {
+    }
 
     @Override
     public List<Book> getAllBooks() {

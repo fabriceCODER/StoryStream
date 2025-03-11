@@ -132,25 +132,6 @@
                                                        </div>
                                                   </div>
 
-                                                  <!-- Category -->
-                                                  <div class="mb-3">
-                                                       <label for="category" class="form-label">Category</label>
-                                                       <select class="form-select" id="category" name="category"
-                                                            required>
-                                                            <option value="">Select a category</option>
-                                                            <c:forEach items="${categories}" var="category">
-                                                                 <option value="${category.id}"
-                                                                      ${book.category.id==category.id ? 'selected' : ''
-                                                                      }>
-                                                                      ${category.name}
-                                                                 </option>
-                                                            </c:forEach>
-                                                       </select>
-                                                       <div class="invalid-feedback">
-                                                            Please select a category.
-                                                       </div>
-                                                  </div>
-
                                                   <!-- Price -->
                                                   <div class="mb-3">
                                                        <label for="price" class="form-label">Price ($)</label>
@@ -161,11 +142,11 @@
                                                        </div>
                                                   </div>
 
-                                                  <!-- Stock -->
+                                                  <!-- Stock/Quantity -->
                                                   <div class="mb-3">
-                                                       <label for="stock" class="form-label">Stock</label>
-                                                       <input type="number" class="form-control" id="stock" name="stock"
-                                                            value="${book.stock}" min="0" required>
+                                                       <label for="quantity" class="form-label">Stock</label>
+                                                       <input type="number" class="form-control" id="quantity"
+                                                            name="quantity" value="${book.quantity}" min="0" required>
                                                        <div class="invalid-feedback">
                                                             Please enter a valid stock amount.
                                                        </div>

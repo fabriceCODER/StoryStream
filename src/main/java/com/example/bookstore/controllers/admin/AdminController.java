@@ -8,6 +8,7 @@ import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 @WebServlet(urlPatterns = {
@@ -22,11 +23,14 @@ import java.util.List;
     maxFileSize = 1024 * 1024 * 10,  // 10 MB
     maxRequestSize = 1024 * 1024 * 15 // 15 MB
 )
-public class AdminController extends BaseAdminController {
+public class AdminController extends HttpServlet {
     private final IBookDAO bookDAO = new BookDAOImpl();
     private final IUserDAO userDAO = new UserDAOImpl();
     private final ICategoryDAO categoryDAO = new CategoryDAOImpl();
     private final IOrderDAO orderDAO = new OrderDAOImpl();
+
+    public AdminController() throws SQLException {
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
@@ -106,43 +110,123 @@ public class AdminController extends BaseAdminController {
 
     private void handleBookOperations(HttpServletRequest request, HttpServletResponse response, String action) 
             throws ServletException, IOException {
-        if (action == null) {
-            // Show books list
+        try {
+            if (action == null) {
+                // Show books list
+                List<Book> books = bookDAO.getAllBooks();
+                request.setAttribute("books", books);
+                request.getRequestDispatcher("/WEB-INF/views/admin/operations/books.jsp").forward(request, response);
+                return;
+            }
+
+            switch (action) {
+                case "/add":
+                    if (request.getMethod().equals("GET")) {
+                        request.getRequestDispatcher("/WEB-INF/views/admin/operations/book-form.jsp").forward(request, response);
+                    } else {
+                        addBook(request, response);
+                    }
+                    break;
+                case "/edit":
+                    if (request.getMethod().equals("GET")) {
+                        int id = Integer.parseInt(request.getParameter("id"));
+                        Book book = bookDAO.getBookById(id);
+                        if (book == null) {
+                            response.sendRedirect(request.getContextPath() + "/admin/operations/books?error=Book not found");
+                            return;
+                        }
+                        request.setAttribute("book", book);
+                        request.getRequestDispatcher("/WEB-INF/views/admin/operations/book-form.jsp").forward(request, response);
+                    } else {
+                        editBook(request, response);
+                    }
+                    break;
+                case "/delete":
+                    deleteBook(request, response);
+                    break;
+                default:
+                    response.sendRedirect(request.getContextPath() + "/admin/operations/books");
+            }
+        } catch (Exception e) {
+            System.err.println("Error in handleBookOperations: " + e.getMessage());
+            e.printStackTrace();
+            request.setAttribute("error", "An error occurred while processing your request");
             List<Book> books = bookDAO.getAllBooks();
             request.setAttribute("books", books);
             request.getRequestDispatcher("/WEB-INF/views/admin/operations/books.jsp").forward(request, response);
-            return;
         }
+    }
 
-        switch (action) {
-            case "/add":
-                if (request.getMethod().equals("GET")) {
-                    request.setAttribute("categories", categoryDAO.getAllCategories());
-                    request.getRequestDispatcher("/WEB-INF/views/admin/operations/book-form.jsp").forward(request, response);
-                } else {
-                    // Handle book addition
-                    // TODO: Implement book addition logic
-                }
-                break;
-            case "/edit":
-                if (request.getMethod().equals("GET")) {
-                    int id = Integer.parseInt(request.getParameter("id"));
-                    Book book = bookDAO.getBookById(id);
-                    request.setAttribute("book", book);
-                    request.setAttribute("categories", categoryDAO.getAllCategories());
-                    request.getRequestDispatcher("/WEB-INF/views/admin/operations/book-form.jsp").forward(request, response);
-                } else {
-                    // Handle book update
-                    // TODO: Implement book update logic
-                }
-                break;
-            case "/delete":
-                int id = Integer.parseInt(request.getParameter("id"));
-                bookDAO.deleteBook(id);
-                response.sendRedirect(request.getContextPath() + "/admin/operations/books");
-                break;
-            default:
-                response.sendRedirect(request.getContextPath() + "/admin/operations/books");
+    private void addBook(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        try {
+            String title = request.getParameter("title");
+            String author = request.getParameter("author");
+            double price = Double.parseDouble(request.getParameter("price"));
+            String description = request.getParameter("description");
+            int quantity = Integer.parseInt(request.getParameter("quantity"));
+
+            if (title == null || title.trim().isEmpty() || 
+                author == null || author.trim().isEmpty() || 
+                description == null || description.trim().isEmpty()) {
+                response.sendRedirect(request.getContextPath() + "/admin/operations/books/add?error=All fields are required");
+                return;
+            }
+
+            Book book = new Book();
+            book.setTitle(title.trim());
+            book.setAuthor(author.trim());
+            book.setPrice(price);
+            book.setDescription(description.trim());
+            book.setQuantity(quantity);
+
+            bookDAO.addBook(book);
+            response.sendRedirect(request.getContextPath() + "/admin/operations/books?message=Book added successfully");
+        } catch (NumberFormatException e) {
+            response.sendRedirect(request.getContextPath() + "/admin/operations/books/add?error=Invalid number format");
+        }
+    }
+
+    private void editBook(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        try {
+            int bookId = Integer.parseInt(request.getParameter("id"));
+            String title = request.getParameter("title");
+            String author = request.getParameter("author");
+            double price = Double.parseDouble(request.getParameter("price"));
+            String description = request.getParameter("description");
+            int quantity = Integer.parseInt(request.getParameter("quantity"));
+
+            if (title == null || title.trim().isEmpty() || 
+                author == null || author.trim().isEmpty() || 
+                description == null || description.trim().isEmpty()) {
+                response.sendRedirect(request.getContextPath() + "/admin/operations/books/edit?id=" + bookId + "&error=All fields are required");
+                return;
+            }
+
+            Book book = new Book();
+            book.setId(bookId);
+            book.setTitle(title.trim());
+            book.setAuthor(author.trim());
+            book.setPrice(price);
+            book.setDescription(description.trim());
+            book.setQuantity(quantity);
+
+            bookDAO.updateBook(book);
+            response.sendRedirect(request.getContextPath() + "/admin/operations/books?message=Book updated successfully");
+        } catch (NumberFormatException e) {
+            response.sendRedirect(request.getContextPath() + "/admin/operations/books/edit?error=Invalid number format");
+        }
+    }
+
+    private void deleteBook(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        try {
+            int bookId = Integer.parseInt(request.getParameter("id"));
+            bookDAO.deleteBook(bookId);
+            response.sendRedirect(request.getContextPath() + "/admin/operations/books?message=Book deleted successfully");
+        } catch (NumberFormatException e) {
+            response.sendRedirect(request.getContextPath() + "/admin/operations/books?error=Invalid book ID");
         }
     }
 

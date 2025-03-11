@@ -1,6 +1,7 @@
 package com.example.bookstore.models;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 public class Order {
@@ -22,6 +23,9 @@ public class Order {
         this.totalAmount = totalAmount;
         this.status = status;
         this.orderDate = orderDate;
+    }
+
+    public Order(int id, int id1, List<Book> books, double totalAmount, Date date, String pending) {
     }
 
     public int getId() {
