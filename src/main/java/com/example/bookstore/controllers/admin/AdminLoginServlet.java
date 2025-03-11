@@ -11,14 +11,14 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet(urlPatterns = {
-    "/admin/auth/login",    // Main login URL
-    "/admin/login",         // Alternative URL
-    "/admin"               // Root admin URL
+    "/auth/login",    // Main login URL
+//    "/admin/login",         // Alternative URL
+//    "/admin"               // Root admin URL
 })
 public class AdminLoginServlet extends BaseAdminController {
     
-    private static final String LOGIN_JSP = "/WEB-INF/views/admin/auth/login.jsp";
-    private static final String DASHBOARD_URL = "/admin/dashboard";
+    private static final String LOGIN_JSP = "/auth/login.jsp";
+    private static final String DASHBOARD_URL = "/views/admin/admin_dashboard.jsp";
     private final IUserDAO userDAO = new UserDAOImpl();
     
     @Override
