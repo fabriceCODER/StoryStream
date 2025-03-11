@@ -66,7 +66,7 @@
                                             <h3 class="book-item-title">${book.title}</h3>
                                             <p class="book-item-author">by ${book.author}</p>
                                             <p class="book-item-price">$${book.price}</p>
-                                            <button class="add-to-cart-btn" onclick="addToCart(${book.id})">Add to
+                                            <button class="add-to-cart-btn" onclick="addToCart('${book.id}')">Add to
                                                 Cart</button>
                                         </div>
                                     </div>
@@ -90,7 +90,7 @@
                                         <h3 class="book-item-title">${book.title}</h3>
                                         <p class="book-item-author">by ${book.author}</p>
                                         <p class="book-item-price">$${book.price}</p>
-                                        <button class="add-to-cart-btn" onclick="addToCart(${book.id})">Add to
+                                        <button class="add-to-cart-btn" onclick="addToCart('${book.id}')">Add to
                                             Cart</button>
                                     </div>
                                 </div>
