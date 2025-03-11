@@ -62,7 +62,7 @@
                                                   <div class="form-group mb-3">
                                                        <label for="username" class="form-label">
                                                             <i class="fas fa-user"></i>
-                                                            <fmt:message key="admin.login.username.label" />
+                                                            <fmt:message key="admin.login.username" />
                                                        </label>
                                                        <input type="text" name="username" id="username"
                                                             class="form-control" required
@@ -76,7 +76,7 @@
                                                   <div class="form-group mb-3">
                                                        <label for="password" class="form-label">
                                                             <i class="fas fa-lock"></i>
-                                                            <fmt:message key="admin.login.password.label" />
+                                                            <fmt:message key="admin.login.password" />
                                                        </label>
                                                        <input type="password" name="password" id="password"
                                                             class="form-control" required
@@ -87,23 +87,25 @@
                                                   </div>
 
                                                   <!-- Submit Button -->
-                                                  <div class="d-grid gap-2">
+                                                  <div class="d-flex justify-content-between align-items-center mb-3">
                                                        <button type="submit" class="btn btn-primary">
                                                             <i class="fas fa-sign-in-alt"></i>
                                                             <fmt:message key="admin.login.submit" />
                                                        </button>
+                                                       <a href="${pageContext.request.contextPath}/admin/auth/register?lang=${not empty param.lang ? param.lang : 'en'}"
+                                                            class="btn btn-link">
+                                                            <i class="fas fa-user-plus"></i>
+                                                            <fmt:message key="admin.login.register" />
+                                                       </a>
                                                   </div>
                                              </form>
 
-                                             <!-- Registration Link -->
+                                             <!-- Back to Home -->
                                              <div class="text-center mt-3">
-                                                  <p>
-                                                       <fmt:message key="admin.login.register.prompt" />
-                                                       <a
-                                                            href="${pageContext.request.contextPath}/admin/auth/register?lang=${not empty param.lang ? param.lang : 'en'}">
-                                                            <fmt:message key="admin.login.register.link" />
-                                                       </a>
-                                                  </p>
+                                                  <a href="${pageContext.request.contextPath}/"
+                                                       class="btn btn-outline-secondary">
+                                                       <i class="fas fa-home"></i> Back to Home
+                                                  </a>
                                              </div>
                                         </div>
                                    </div>

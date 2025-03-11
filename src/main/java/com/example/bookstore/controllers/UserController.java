@@ -14,8 +14,8 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.io.IOException;
 
 @WebServlet(urlPatterns = {
-    "/auth/login",
-    "/auth/register",
+    "/auth/admin/login",
+    "/auth/admin/register",
     "/auth/logout",
     "/user/*"
 })
@@ -62,15 +62,15 @@ public class UserController extends HttpServlet {
         String lang = request.getParameter("lang");
 
         if (path.endsWith("/login")) {
-            request.getRequestDispatcher("/auth/login.jsp").forward(request, response);
+            request.getRequestDispatcher("/auth/admin/login.jsp").forward(request, response);
         } else if (path.endsWith("/register")) {
-            request.getRequestDispatcher("/auth/register.jsp").forward(request, response);
+            request.getRequestDispatcher("/auth/admin/register.jsp").forward(request, response);
         } else if (path.endsWith("/logout")) {
             HttpSession session = request.getSession(false);
             if (session != null) {
                 session.invalidate();
             }
-            response.sendRedirect(request.getContextPath() + "/auth/login?message=Logged out successfully" + 
+            response.sendRedirect(request.getContextPath() + "/auth/admin/login?message=Logged out successfully" +
                 (lang != null ? "&lang=" + lang : ""));
         }
     }

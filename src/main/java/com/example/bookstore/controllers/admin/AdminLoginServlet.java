@@ -10,15 +10,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebServlet(urlPatterns = {
-    "/auth/login",    // Main login URL
-//    "/admin/login",         // Alternative URL
-//    "/admin"               // Root admin URL
-})
+@WebServlet("/auth/login")
 public class AdminLoginServlet extends BaseAdminController {
     
     private static final String LOGIN_JSP = "/auth/login.jsp";
-    private static final String DASHBOARD_URL = "/views/admin/admin_dashboard.jsp";
+    private static final String DASHBOARD_URL = "/views/admin/dashboard";
     private final IUserDAO userDAO = new UserDAOImpl();
     
     @Override
@@ -62,13 +58,8 @@ public class AdminLoginServlet extends BaseAdminController {
                 // Log successful login
                 System.out.println("Admin login successful: " + username);
                 
-                // Redirect to dashboard or saved URL
-                String redirectUrl = getRedirectUrl(request);
-                if (redirectUrl != null && redirectUrl.startsWith("/admin/")) {
-                    response.sendRedirect(request.getContextPath() + redirectUrl);
-                } else {
-                    response.sendRedirect(request.getContextPath() + DASHBOARD_URL);
-                }
+                // Redirect to dashboard
+                response.sendRedirect(request.getContextPath() + DASHBOARD_URL);
             } else {
                 // Log failed login attempt
                 System.out.println("Admin login failed: " + username);
@@ -90,7 +81,7 @@ public class AdminLoginServlet extends BaseAdminController {
     
     private void redirectWithError(HttpServletResponse response, String contextPath, 
             String errorKey, String lang) throws IOException {
-        response.sendRedirect(String.format("%s/admin/auth/login?error=%s&lang=%s",
+        response.sendRedirect(String.format("%s/auth/login?error=%s&lang=%s",
                 contextPath, errorKey, lang));
     }
 } 

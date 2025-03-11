@@ -14,10 +14,10 @@
 <body>
     <nav class="navbar admin-navbar">
         <div class="container">
-            <a href="${pageContext.request.contextPath}/admin/dashboard" class="navbar-brand">BookStore Admin</a>
+            <a href="${pageContext.request.contextPath}/admin/admin_dashboard" class="navbar-brand">BookStore Admin</a>
             <div class="nav-links">
-                <a href="${pageContext.request.contextPath}/admin/dashboard">Dashboard</a>
-                <a href="${pageContext.request.contextPath}/admin/books" class="active">Manage Books</a>
+                <a href="${pageContext.request.contextPath}/admin/admin_dashboard">Dashboard</a>
+                <a href="${pageContext.request.contextPath}/admin/manage_book" class="active">Manage Books</a>
                 <a href="${pageContext.request.contextPath}/admin/orders">Orders</a>
                 <a href="${pageContext.request.contextPath}/auth/logout">Logout</a>
             </div>
@@ -26,8 +26,8 @@
 
     <div class="admin-sidebar">
         <ul class="nav-links">
-            <li><a href="${pageContext.request.contextPath}/admin/dashboard">Dashboard</a></li>
-            <li><a href="${pageContext.request.contextPath}/admin/books" class="active">Books</a></li>
+            <li><a href="${pageContext.request.contextPath}/admin/admin_dashboard">Dashboard</a></li>
+            <li><a href="${pageContext.request.contextPath}/admin/manage_book" class="active">Books</a></li>
             <li><a href="${pageContext.request.contextPath}/admin/orders">Orders</a></li>
             <li><a href="${pageContext.request.contextPath}/admin/users">Users</a></li>
             <li><a href="${pageContext.request.contextPath}/admin/reports">Reports</a></li>

@@ -86,6 +86,18 @@
                             </small>
                         </div>
 
+                        <!-- Admin Admin Code -->
+                        <div class="form-group mb-3">
+                            <label for="adminCode" class="form-label">
+                                <i class="fas fa-key"></i>
+                                <fmt:message key="admin.register.adminCode.label" />
+                            </label>
+                            <input type="text" name="adminCode" id="adminCode" class="form-control" required>
+                            <div class="invalid-feedback">
+                                <fmt:message key="admin.register.adminCode.required" />
+                            </div>
+                        </div>
+
                         <!-- Submit Button -->
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <button type="submit" class="btn btn-primary">
