@@ -44,8 +44,8 @@
                                                 <i class="fas fa-envelope"></i>
                                                 <fmt:message key="register.email.label" />
                                             </label>
-                                            <input type="email" name="email" id="email" class="form-control" required
-                                                placeholder="<fmt:message key=" register.email.placeholder" />">
+                                            <input type="email" name="email" id="email" class="form-control" 
+                                                required placeholder="<fmt:message key='register.email.placeholder' />">
                                             <div class="invalid-feedback">
                                                 <fmt:message key="register.email.required" />
                                             </div>
@@ -63,7 +63,7 @@
                                             <input type="password" name="password" id="password" class="form-control"
                                                 required minlength="8"
                                                 pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$"
-                                                placeholder="<fmt:message key=" register.password.placeholder" />">
+                                                placeholder="<fmt:message key='register.password.placeholder' />">
                                             <div class="invalid-feedback">
                                                 <fmt:message key="register.password.required" />
                                             </div>
@@ -79,8 +79,8 @@
                                                 <fmt:message key="register.confirmPassword.label" />
                                             </label>
                                             <input type="password" name="confirmPassword" id="confirmPassword"
-                                                class="form-control" required placeholder="<fmt:message key="
-                                                register.confirmPassword.placeholder" />">
+                                                class="form-control" required 
+                                                placeholder="<fmt:message key='register.confirmPassword.placeholder' />">
                                             <div class="invalid-feedback">
                                                 <fmt:message key="register.confirmPassword.required" />
                                             </div>
@@ -162,7 +162,6 @@
                 </script>
 
                 <!-- Hidden element for password mismatch message translation -->
-                <div hidden data-password-mismatch data-message="<fmt:message key=" register.password.mismatch" />">
-                </div>
+                <div hidden data-password-mismatch data-message="<fmt:message key='register.password.mismatch' />"></div>
 
                 <%@ include file="/WEB-INF/includes/footer.jsp" %>
