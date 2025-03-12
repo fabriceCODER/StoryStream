@@ -180,8 +180,12 @@ public class AdminController extends HttpServlet {
             book.setDescription(description.trim());
             book.setQuantity(quantity);
 
-            bookDAO.addBook(book);
-            response.sendRedirect(request.getContextPath() + "/admin/operations/books?message=Book added successfully");
+            boolean success = bookDAO.addBook(book);
+            if (success) {
+                response.sendRedirect(request.getContextPath() + "/admin/operations/books?message=Book added successfully");
+            } else {
+                response.sendRedirect(request.getContextPath() + "/admin/operations/books/add?error=Failed to add book");
+            }
         } catch (NumberFormatException e) {
             response.sendRedirect(request.getContextPath() + "/admin/operations/books/add?error=Invalid number format");
         }

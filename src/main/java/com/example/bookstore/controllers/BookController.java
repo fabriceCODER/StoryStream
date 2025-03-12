@@ -27,12 +27,12 @@ public class BookController extends HttpServlet {
         if (action == null) {
             List<Book> books = bookService.getAllBooks();
             request.setAttribute("books", books);
-            request.getRequestDispatcher("books.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/admin/operations/books.jsp").forward(request, response);
         } else if (action.equals("view")) {
             int id = Integer.parseInt(request.getParameter("id"));
             Book book = bookService.getBookById(id);
             request.setAttribute("book", book);
-            request.getRequestDispatcher("viewBook.jsp").forward(request, response);
+            request.getRequestDispatcher("/viewBook.jsp").forward(request, response);
         }
     }
 
@@ -46,8 +46,11 @@ public class BookController extends HttpServlet {
             double price = Double.parseDouble(request.getParameter("price"));
 
             Book book = new Book(title, author, price);
-            bookService.addBook(book);
-            response.sendRedirect("books");
+            boolean isAdded = bookService.addBook(book);
+            if (isAdded){
+                response.sendRedirect("books");
+            }
+
         } else if (action.equals("delete")) {
             int id = Integer.parseInt(request.getParameter("id"));
             bookService.deleteBook(id);

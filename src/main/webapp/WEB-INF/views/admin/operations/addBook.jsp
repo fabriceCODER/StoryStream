@@ -78,7 +78,7 @@
                             </div>
 
                             <div class="admin-actions">
-                                <a href="${pageContext.request.contextPath}/admin/books"
+                                <a href="${pageContext.request.contextPath}/books"
                                     class="btn btn-secondary">Cancel</a>
                                 <button type="submit" class="btn btn-primary">Add Book</button>
                             </div>

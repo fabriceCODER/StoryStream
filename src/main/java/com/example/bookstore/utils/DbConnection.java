@@ -16,7 +16,6 @@ public class DbConnection {
 
     static {
         try {
-            // First, explicitly load the PostgreSQL driver
             try {
                 Class.forName(DRIVER_CLASS);
                 System.out.println("PostgreSQL JDBC Driver loaded successfully");

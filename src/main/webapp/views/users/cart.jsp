@@ -96,15 +96,15 @@
                                                         <td>$${item.book.price}</td>
                                                         <td>
                                                             <div class="quantity-control">
-                                                                <button onclick="updateQuantity(${item.book.id}, -1)"
+                                                                <button onclick='updateQuantity("${item.book.id}", -1)'
                                                                     class="btn btn-sm btn-outline-secondary">
                                                                     <i class="fas fa-minus"></i>
                                                                 </button>
                                                                 <input type="number" value="${item.quantity}" min="1"
                                                                     max="99"
-                                                                    onchange="updateQuantity(${item.book.id}, this.value)"
+                                                                    onchange='updateQuantity("${item.book.id}", this.value)'
                                                                     class="form-control form-control-sm quantity-input">
-                                                                <button onclick="updateQuantity(${item.book.id}, 1)"
+                                                                <button onclick='updateQuantity("${item.book.id}", 1)'
                                                                     class="btn btn-sm btn-outline-secondary">
                                                                     <i class="fas fa-plus"></i>
                                                                 </button>
@@ -112,7 +112,7 @@
                                                         </td>
                                                         <td>$${item.totalPrice}</td>
                                                         <td>
-                                                            <button onclick="removeFromCart(${item.book.id})"
+                                                            <button onclick='removeFromCart("${item.book.id}")'
                                                                 class="btn btn-danger btn-sm">
                                                                 <i class="fas fa-trash"></i>
                                                             </button>
